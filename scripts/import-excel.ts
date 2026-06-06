@@ -1,0 +1,233 @@
+import fs from "node:fs";
+import { createRequire } from "node:module";
+import path from "node:path";
+import process from "node:process";
+import type { Product } from "../src/types/product.ts";
+import type * as XLSXType from "xlsx";
+
+const require = createRequire(import.meta.url);
+const XLSX = require("xlsx") as typeof XLSXType;
+
+const rootDir = process.cwd();
+const defaultExcelPath = path.join(rootDir, "data", "inventario_actual.xlsx");
+const excelPath = path.resolve(process.argv[2] ?? defaultExcelPath);
+const outputPath = path.join(rootDir, "src", "data", "productos.ts");
+const imagesDir = path.join(rootDir, "public", "images");
+
+type ExcelRow = Record<string, unknown>;
+
+type ImportReport = {
+  rows: number;
+  imported: number;
+  withImage: Product[];
+  withoutImage: Product[];
+  imagesWithoutProduct: string[];
+};
+
+function normalizeKey(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "")
+    .toLowerCase();
+}
+
+function getCell(row: ExcelRow, columnName: string) {
+  const normalizedColumn = normalizeKey(columnName);
+  const matchingKey = Object.keys(row).find(
+    (key) => normalizeKey(key) === normalizedColumn,
+  );
+
+  return matchingKey ? row[matchingKey] : "";
+}
+
+function toText(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function toNumber(value: unknown) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const normalized = toText(value).replace(/[^\d.,-]/g, "").replace(",", ".");
+  const parsed = Number(normalized);
+
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function toList(value: unknown) {
+  return toText(value)
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toBoolean(value: unknown) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return value > 0;
+  }
+
+  const normalized = toText(value).toLowerCase();
+
+  return ["si", "sí", "true", "1", "x", "yes"].includes(normalized);
+}
+
+function normalizeStyle(value: unknown) {
+  return toText(value)
+    .replace(/^estilo\s+/i, "")
+    .replace(/\//g, "")
+    .trim();
+}
+
+function normalizeImageLookupKey(value: string) {
+  return normalizeKey(normalizeStyle(value));
+}
+
+function resolveStyleWithImageName(estilo: string) {
+  const matchingImageName = getProductImageNames().find(
+    (imageName) =>
+      normalizeImageLookupKey(imageName) === normalizeImageLookupKey(estilo),
+  );
+
+  return matchingImageName ?? estilo;
+}
+
+function hasProductImage(estilo: string) {
+  return fs.existsSync(path.join(imagesDir, `${estilo}.png`));
+}
+
+function rowToProduct(row: ExcelRow): Product {
+  const estilo = resolveStyleWithImageName(normalizeStyle(getCell(row, "Estilo")));
+
+  return {
+    id: estilo,
+    estilo,
+    patron: toText(getCell(row, "Patrón")),
+    cantidad: toNumber(getCell(row, "Cantidad")),
+    tallas: toList(getCell(row, "Tallas")),
+    colores: toList(getCell(row, "Colores")),
+    caracteristicas: toText(getCell(row, "Características")),
+    mangaCorta: toBoolean(getCell(row, "Manga corta")),
+    precio: toNumber(getCell(row, "Precio")),
+    estado: toText(getCell(row, "Estado")),
+    hasImage: hasProductImage(estilo),
+  };
+}
+
+function uniqueList(values: string[]) {
+  return Array.from(new Set(values.filter(Boolean)));
+}
+
+function mergeProductsByStyle(products: Product[]) {
+  const productsByStyle = new Map<string, Product>();
+
+  for (const product of products) {
+    const existingProduct = productsByStyle.get(product.estilo);
+
+    if (!existingProduct) {
+      productsByStyle.set(product.estilo, product);
+      continue;
+    }
+
+    productsByStyle.set(product.estilo, {
+      ...existingProduct,
+      cantidad: existingProduct.cantidad + product.cantidad,
+      tallas: uniqueList([...existingProduct.tallas, ...product.tallas]),
+      colores: uniqueList([...existingProduct.colores, ...product.colores]),
+      mangaCorta: existingProduct.mangaCorta || product.mangaCorta,
+      precio: existingProduct.precio || product.precio,
+      estado: existingProduct.estado || product.estado,
+      patron: existingProduct.patron || product.patron,
+      caracteristicas:
+        existingProduct.caracteristicas || product.caracteristicas,
+      hasImage: existingProduct.hasImage || product.hasImage,
+    });
+  }
+
+  return Array.from(productsByStyle.values()).map((product, index) => ({
+    ...product,
+    id: `product-${String(index + 1).padStart(3, "0")}-${product.estilo}`,
+  }));
+}
+
+function getProductImageNames() {
+  if (!fs.existsSync(imagesDir)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(imagesDir)
+    .filter((fileName) => path.extname(fileName).toLowerCase() === ".png")
+    .map((fileName) => path.basename(fileName, ".png"));
+}
+
+function buildOutput(products: Product[]) {
+  return `import type { Product } from "@/src/types/product";
+
+export const productos: Product[] = ${JSON.stringify(products, null, 2)};
+`;
+}
+
+function printReport(report: ImportReport) {
+  console.log("Importacion desde Excel completada");
+  console.log(`Filas leidas: ${report.rows}`);
+  console.log(`Productos importados: ${report.imported}`);
+  console.log(`Productos con imagen: ${report.withImage.length}`);
+  console.log(`Productos sin imagen: ${report.withoutImage.length}`);
+
+  if (report.withoutImage.length > 0) {
+    console.log(
+      `Sin imagen: ${report.withoutImage.map((product) => product.estilo).join(", ")}`,
+    );
+  }
+
+  console.log(`Imagenes sin producto asociado: ${report.imagesWithoutProduct.length}`);
+
+  if (report.imagesWithoutProduct.length > 0) {
+    console.log(report.imagesWithoutProduct.join(", "));
+  }
+}
+
+function main() {
+  if (!fs.existsSync(excelPath)) {
+    throw new Error(
+      `No se encontro el Excel en ${excelPath}. Usa data/inventario_actual.xlsx o pasa una ruta: npm run import-excel -- data/inventario.xlsx`,
+    );
+  }
+
+  const workbook = XLSX.readFile(excelPath);
+  const firstSheetName = workbook.SheetNames[0];
+
+  if (!firstSheetName) {
+    throw new Error("El Excel no contiene hojas.");
+  }
+
+  const sheet = workbook.Sheets[firstSheetName];
+  const rows = XLSX.utils.sheet_to_json<ExcelRow>(sheet, { defval: "" });
+  const products = mergeProductsByStyle(rows
+    .map(rowToProduct)
+    .filter((product) => product.estilo.length > 0));
+
+  const productStyles = new Set(products.map((product) => product.estilo));
+  const imagesWithoutProduct = getProductImageNames().filter(
+    (imageName) => !productStyles.has(imageName),
+  );
+
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, buildOutput(products), "utf8");
+
+  printReport({
+    rows: rows.length,
+    imported: products.length,
+    withImage: products.filter((product) => product.hasImage),
+    withoutImage: products.filter((product) => !product.hasImage),
+    imagesWithoutProduct,
+  });
+}
+
+main();
