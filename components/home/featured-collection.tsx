@@ -23,7 +23,7 @@ const products = [
 
 export function FeaturedCollection() {
   return (
-    <section id="coleccion" className="bg-riviere-bone py-20 md:py-28">
+    <section id="coleccion" className="bg-riviere-sand py-20 md:py-28">
       <div className="container">
         <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -35,8 +35,8 @@ export function FeaturedCollection() {
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-riviere-smoke">
-            Una seleccion de camisas Givenchy curada por RIVIERE para construir
-            una presencia masculina sobria, editorial y atemporal.
+            Una seleccion de camisas Givenchy seleccionadas por RIVIERE para
+            construir una presencia masculina sobria, editorial y atemporal.
           </p>
         </div>
 

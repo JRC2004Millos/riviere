@@ -81,20 +81,18 @@ export function Navbar() {
       >
         <div className="min-h-0">
           <div className="container flex flex-col gap-5 py-6">
-            {[
-              ...navItems,
-              { label: "Login", href: "/login" },
-              { label: "Carrito", href: "/carrito" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm uppercase tracking-[0.2em] text-[#111]/78"
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {[...navItems, { label: "Carrito", href: "/carrito" }].map(
+              (item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm uppercase tracking-[0.2em] text-[#111]/78"
+                  onClick={() => setOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </div>
         </div>
       </div>

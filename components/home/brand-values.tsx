@@ -9,7 +9,7 @@ const values = [
   },
   {
     title: "Diseno",
-    copy: "Curaduria RIVIERE enfocada en proporcion, caida y detalle.",
+    copy: "Seleccionadas por RIVIERE, enfocada en proporción, caída y detalle.",
   },
   {
     title: "Exclusividad",
@@ -19,7 +19,10 @@ const values = [
 
 export function BrandValues() {
   return (
-    <section id="valores" className="bg-riviere-ink py-20 text-riviere-bone md:py-28">
+    <section
+      id="valores"
+      className="bg-riviere-ink py-20 text-riviere-bone md:py-28"
+    >
       <div className="container">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.24em] text-riviere-bone/62">
