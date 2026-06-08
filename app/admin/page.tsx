@@ -1,12 +1,16 @@
 import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { productos } from "@/src/data/productos";
+import { getAllProducts } from "@/src/lib/products-store";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
+  const productos = await getAllProducts();
   const total = productos.length;
   const disponibles = productos.filter((p) => p.cantidad > 0).length;
   const agotados = total - disponibles;
@@ -54,7 +58,20 @@ export default async function AdminPage() {
           ))}
         </div>
 
-        <div className="mt-6 border border-riviere-ink/10 bg-white p-8">
+        <div className="mt-6 border border-riviere-ink/10 bg-white p-6">
+          <p className="mb-4 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
+            Accesos rápidos
+          </p>
+          <Button
+            asChild
+            variant="outline"
+            className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
+          >
+            <Link href="/admin/productos">Gestionar productos →</Link>
+          </Button>
+        </div>
+
+        <div className="mt-4 border border-riviere-ink/10 bg-white p-8">
           <p className="mb-2 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
             Sesión activa
           </p>

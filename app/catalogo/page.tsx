@@ -1,7 +1,10 @@
 import { CatalogGrid } from "@/components/catalog/catalog-grid";
-import { productos } from "@/src/data/productos";
+import { getAllProducts } from "@/src/lib/products-store";
 
-export default function CatalogoPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CatalogoPage() {
+  const productos = await getAllProducts();
   return (
     <main className="bg-riviere-bone pt-28">
       <section className="container pb-12 pt-14 md:pb-16 md:pt-20">

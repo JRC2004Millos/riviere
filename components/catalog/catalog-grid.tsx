@@ -8,10 +8,10 @@ import {
 } from "@/components/catalog/catalog-filters";
 import { ProductCard } from "@/components/catalog/product-card";
 import { getProductStyleCategory } from "@/src/lib/product-display";
-import type { Product } from "@/src/types/product";
+import type { MergedProduct } from "@/src/lib/products-store";
 
 type CatalogGridProps = {
-  products: Product[];
+  products: MergedProduct[];
 };
 
 const initialFilters: CatalogFilterState = {
@@ -32,7 +32,7 @@ type FilterKey = keyof Pick<
 >;
 
 function getFilteredProducts(
-  products: Product[],
+  products: MergedProduct[],
   filters: CatalogFilterState,
   ignoredFilter?: FilterKey,
 ) {

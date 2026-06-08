@@ -6,7 +6,7 @@ import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { getProductImage } from "@/src/lib/product-images";
 import { getProductCatalogStatus } from "@/src/lib/product-display";
-import type { Product } from "@/src/types/product";
+import type { MergedProduct } from "@/src/lib/products-store";
 
 const currencyFormatter = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -15,11 +15,10 @@ const currencyFormatter = new Intl.NumberFormat("es-CO", {
 });
 
 type ProductCardProps = {
-  product: Product;
+  product: MergedProduct;
 };
 
 function ProductCardComponent({ product }: ProductCardProps) {
-  const colorPrincipal = product.colores[0] ?? "Neutro";
   const catalogStatus = getProductCatalogStatus(product);
 
   return (
@@ -44,10 +43,10 @@ function ProductCardComponent({ product }: ProductCardProps) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-sm font-medium uppercase tracking-[0.18em]">
-              {product.estilo}
+              {product.nombre || product.estilo}
             </h2>
             <p className="mt-2 text-xs uppercase tracking-[0.16em] text-riviere-smoke">
-              {colorPrincipal}
+              {product.estilo}
             </p>
           </div>
           <p className="text-sm text-riviere-ink">

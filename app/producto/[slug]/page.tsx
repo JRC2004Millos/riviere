@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { productos } from "@/src/data/productos";
+import { getProductByEstilo } from "@/src/lib/products-store";
 import { getProductImage } from "@/src/lib/product-images";
 import { getProductStyleCategory } from "@/src/lib/product-display";
 import { Button } from "@/components/ui/button";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+
+export const dynamic = "force-dynamic";
 
 const currencyFormatter = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -12,17 +15,13 @@ const currencyFormatter = new Intl.NumberFormat("es-CO", {
   maximumFractionDigits: 0,
 });
 
-export function generateStaticParams() {
-  return productos.map((p) => ({ slug: p.estilo.toLowerCase() }));
-}
-
 export default async function ProductPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = productos.find((p) => p.estilo.toLowerCase() === slug);
+  const product = await getProductByEstilo(slug);
 
   if (!product) notFound();
 
@@ -38,7 +37,10 @@ export default async function ProductPage({
             Inicio
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/catalogo" className="transition-colors hover:text-riviere-ink">
+          <Link
+            href="/catalogo"
+            className="transition-colors hover:text-riviere-ink"
+          >
             Catálogo
           </Link>
           <span className="mx-2">/</span>
@@ -69,48 +71,17 @@ export default async function ProductPage({
             </p>
 
             <h1 className="text-3xl font-light uppercase tracking-[0.2em] md:text-4xl">
-              {product.estilo}
+              {product.nombre || product.estilo}
             </h1>
+            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-riviere-smoke">
+              {product.estilo}
+            </p>
 
             <p className="mt-5 text-2xl font-light">
               {currencyFormatter.format(product.precio)}
             </p>
 
             <div className="mt-8 space-y-7 border-t border-riviere-ink/10 pt-8">
-              {/* Colores */}
-              <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-riviere-smoke">
-                  Colores
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.colores.map((color) => (
-                    <span
-                      key={color}
-                      className="border border-riviere-ink/15 px-3 py-1 text-xs uppercase tracking-[0.14em]"
-                    >
-                      {color}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tallas */}
-              <div>
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-riviere-smoke">
-                  Tallas
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {product.tallas.map((talla) => (
-                    <span
-                      key={talla}
-                      className="border border-riviere-ink/15 px-3 py-1.5 text-xs uppercase tracking-[0.14em]"
-                    >
-                      {talla}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
               {/* Características */}
               <div>
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-riviere-smoke">
@@ -136,7 +107,17 @@ export default async function ProductPage({
               </div>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-12 flex flex-col gap-3">
+              {disponible && (
+                <AddToCartButton
+                  id={product.id}
+                  estilo={product.estilo}
+                  precio={product.precio}
+                  imagen={getProductImage(product.estilo)}
+                  tallas={product.tallas}
+                  stockMax={product.cantidad}
+                />
+              )}
               <Button
                 asChild
                 variant="outline"

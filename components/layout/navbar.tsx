@@ -5,15 +5,17 @@ import Link from "next/link";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/src/context/cart-context";
 
 const navItems = [
-  { label: "Catalogo", href: "/catalogo" },
-  { label: "Coleccion", href: "/#coleccion" },
-  { label: "Valores", href: "/#valores" },
+  { label: "Catálogo", href: "/catalogo" },
+  { label: "Colecciones", href: "/#coleccion" },
+  { label: "Contacto", href: "/contacto" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { totalItems } = useCart();
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-riviere-ink/10 bg-white/92 text-[#111] backdrop-blur-sm">
@@ -39,7 +41,11 @@ export function Navbar() {
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        <Link href="/" className="relative block h-12 w-16" aria-label="RIVIERE home">
+        <Link
+          href="/"
+          className="relative block h-12 w-16"
+          aria-label="RIVIERE home"
+        >
           <Image
             src="/images/Rivie png.png"
             alt="RIVIERE"
@@ -50,20 +56,19 @@ export function Navbar() {
         </Link>
 
         <div className="hidden items-center justify-end gap-5 md:flex">
-          <Link
-            href="/#valores"
-            className="text-xs uppercase tracking-[0.28em] text-[#111]/75 transition hover:text-[#111]"
-          >
-            Contacto
-          </Link>
           <Link href="/catalogo" aria-label="Buscar">
             <Search className="h-4 w-4" />
           </Link>
           <Link href="/login" aria-label="Login">
             <User className="h-4 w-4" />
           </Link>
-          <Link href="/carrito" aria-label="Carrito">
+          <Link href="/carrito" aria-label="Carrito" className="relative">
             <ShoppingBag className="h-4 w-4" />
+            {totalItems > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-riviere-ink text-[9px] leading-none text-white">
+                {totalItems > 9 ? "9+" : totalItems}
+              </span>
+            )}
           </Link>
         </div>
       </nav>
