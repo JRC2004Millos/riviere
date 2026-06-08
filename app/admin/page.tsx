@@ -1,10 +1,69 @@
-import { FutureRoute } from "@/components/future-route";
+import { auth, signOut } from "@/auth";
+import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { productos } from "@/src/data/productos";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const session = await auth();
+  if (!session) redirect("/login");
+
+  const total = productos.length;
+  const disponibles = productos.filter((p) => p.cantidad > 0).length;
+  const agotados = total - disponibles;
+
+  async function handleSignOut() {
+    "use server";
+    await signOut({ redirectTo: "/" });
+  }
+
   return (
-    <FutureRoute
-      title="Admin"
-      description="Espacio reservado para gestion interna. No incluye autenticacion ni base de datos en esta fase."
-    />
+    <main className="min-h-screen bg-riviere-bone pt-20 text-[#111]">
+      <div className="container py-14">
+        <div className="mb-12 flex items-center justify-between">
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-[0.28em] text-riviere-smoke">
+              Panel de administración
+            </p>
+            <h1 className="text-3xl font-light uppercase tracking-[0.15em]">
+              RIVIERE Admin
+            </h1>
+          </div>
+          <form action={handleSignOut}>
+            <Button
+              type="submit"
+              variant="outline"
+              className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
+            >
+              Cerrar sesión
+            </Button>
+          </form>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            { label: "Total Productos", value: total },
+            { label: "Disponibles", value: disponibles },
+            { label: "Agotados", value: agotados },
+          ].map(({ label, value }) => (
+            <div key={label} className="border border-riviere-ink/10 bg-white p-8">
+              <p className="mb-3 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
+                {label}
+              </p>
+              <p className="text-4xl font-light">{value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 border border-riviere-ink/10 bg-white p-8">
+          <p className="mb-2 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
+            Sesión activa
+          </p>
+          <p className="text-sm text-riviere-smoke">
+            Usuario:{" "}
+            <span className="text-riviere-ink">{session.user?.name}</span>
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }

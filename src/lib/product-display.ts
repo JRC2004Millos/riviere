@@ -1,6 +1,6 @@
 import type { Product } from "@/src/types/product";
 
-export function getProductDesign(product: Product) {
+export function getProductStyleCategory(product: Product) {
   return product.caracteristicas.trim() || "Sin clasificar";
 }
 

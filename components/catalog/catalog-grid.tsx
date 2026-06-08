@@ -7,7 +7,7 @@ import {
   type CatalogFilterState,
 } from "@/components/catalog/catalog-filters";
 import { ProductCard } from "@/components/catalog/product-card";
-import { getProductDesign } from "@/src/lib/product-display";
+import { getProductStyleCategory } from "@/src/lib/product-display";
 import type { Product } from "@/src/types/product";
 
 type CatalogGridProps = {
@@ -17,7 +17,7 @@ type CatalogGridProps = {
 const initialFilters: CatalogFilterState = {
   search: "",
   color: "all",
-  diseno: "all",
+  estiloCategoria: "all",
   talla: "all",
   mangaCorta: "all",
   sort: "default",
@@ -25,6 +25,60 @@ const initialFilters: CatalogFilterState = {
 
 const tallaOrder = ["XS", "S", "M", "L", "XL", "XXL"];
 const productsPerPage = 8;
+
+type FilterKey = keyof Pick<
+  CatalogFilterState,
+  "search" | "color" | "estiloCategoria" | "talla" | "mangaCorta"
+>;
+
+function getFilteredProducts(
+  products: Product[],
+  filters: CatalogFilterState,
+  ignoredFilter?: FilterKey,
+) {
+  const normalizedSearch = filters.search.trim().toLowerCase();
+
+  return products.filter((product) => {
+    const matchesSearch =
+      ignoredFilter === "search" ||
+      product.estilo.toLowerCase().includes(normalizedSearch);
+    const matchesColor =
+      ignoredFilter === "color" ||
+      filters.color === "all" ||
+      product.colores.includes(filters.color);
+    const matchesEstilo =
+      ignoredFilter === "estiloCategoria" ||
+      filters.estiloCategoria === "all" ||
+      getProductStyleCategory(product) === filters.estiloCategoria;
+    const matchesTalla =
+      ignoredFilter === "talla" ||
+      filters.talla === "all" ||
+      product.tallas.includes(filters.talla);
+    const matchesManga =
+      ignoredFilter === "mangaCorta" ||
+      filters.mangaCorta === "all" ||
+      String(product.mangaCorta) === filters.mangaCorta;
+
+    return (
+      matchesSearch &&
+      matchesColor &&
+      matchesEstilo &&
+      matchesTalla &&
+      matchesManga
+    );
+  });
+}
+
+function sortTallas(left: string, right: string) {
+  const leftIndex = tallaOrder.indexOf(left);
+  const rightIndex = tallaOrder.indexOf(right);
+
+  if (leftIndex === -1 || rightIndex === -1) {
+    return left.localeCompare(right);
+  }
+
+  return leftIndex - rightIndex;
+}
 
 export function CatalogGrid({ products }: CatalogGridProps) {
   const [filters, setFilters] = useState<CatalogFilterState>(initialFilters);
@@ -37,53 +91,54 @@ export function CatalogGrid({ products }: CatalogGridProps) {
 
   const colors = useMemo(
     () =>
-      Array.from(new Set(products.flatMap((product) => product.colores))).sort(
-        (left, right) => left.localeCompare(right),
-      ),
-    [products],
+      Array.from(
+        new Set(
+          getFilteredProducts(products, filters, "color").flatMap(
+            (product) => product.colores,
+          ),
+        ),
+      ).sort((left, right) => left.localeCompare(right)),
+    [filters, products],
   );
 
   const tallas = useMemo(
     () =>
-      Array.from(new Set(products.flatMap((product) => product.tallas))).sort(
-        (left, right) => tallaOrder.indexOf(left) - tallaOrder.indexOf(right),
-      ),
-    [products],
+      Array.from(
+        new Set(
+          getFilteredProducts(products, filters, "talla").flatMap(
+            (product) => product.tallas,
+          ),
+        ),
+      ).sort(sortTallas),
+    [filters, products],
   );
 
-  const disenos = useMemo(
+  const estilos = useMemo(
     () =>
-      Array.from(new Set(products.map(getProductDesign))).sort((left, right) =>
-        left.localeCompare(right),
+      Array.from(
+        new Set(
+          getFilteredProducts(products, filters, "estiloCategoria").map(
+            getProductStyleCategory,
+          ),
+        ),
+      ).sort((left, right) => left.localeCompare(right)),
+    [filters, products],
+  );
+
+  const mangas = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          getFilteredProducts(products, filters, "mangaCorta").map((product) =>
+            String(product.mangaCorta),
+          ),
+        ),
       ),
-    [products],
+    [filters, products],
   );
 
   const filteredProducts = useMemo(() => {
-    const normalizedSearch = filters.search.trim().toLowerCase();
-
-    const result = products.filter((product) => {
-      const matchesSearch = product.estilo
-        .toLowerCase()
-        .includes(normalizedSearch);
-      const matchesColor =
-        filters.color === "all" || product.colores.includes(filters.color);
-      const matchesDiseno =
-        filters.diseno === "all" || getProductDesign(product) === filters.diseno;
-      const matchesTalla =
-        filters.talla === "all" || product.tallas.includes(filters.talla);
-      const matchesManga =
-        filters.mangaCorta === "all" ||
-        String(product.mangaCorta) === filters.mangaCorta;
-
-      return (
-        matchesSearch &&
-        matchesColor &&
-        matchesDiseno &&
-        matchesTalla &&
-        matchesManga
-      );
-    });
+    const result = getFilteredProducts(products, filters);
 
     if (filters.sort === "price-asc") {
       return [...result].sort((left, right) => left.precio - right.precio);
@@ -105,8 +160,9 @@ export function CatalogGrid({ products }: CatalogGridProps) {
         <CatalogFilters
           filters={filters}
           colors={colors}
-          disenos={disenos}
+          estilos={estilos}
           tallas={tallas}
+          mangas={mangas}
           onChange={handleFilterChange}
         />
 

@@ -9,7 +9,7 @@ type SortValue = "default" | "price-asc" | "price-desc";
 export type CatalogFilterState = {
   search: string;
   color: string;
-  diseno: string;
+  estiloCategoria: string;
   talla: string;
   mangaCorta: string;
   sort: SortValue;
@@ -18,16 +18,18 @@ export type CatalogFilterState = {
 type CatalogFiltersProps = {
   filters: CatalogFilterState;
   colors: string[];
-  disenos: string[];
+  estilos: string[];
   tallas: string[];
+  mangas: string[];
   onChange: (filters: CatalogFilterState) => void;
 };
 
 export function CatalogFilters({
   filters,
   colors,
-  disenos,
+  estilos,
   tallas,
+  mangas,
   onChange,
 }: CatalogFiltersProps) {
   const [open, setOpen] = useState(false);
@@ -70,17 +72,19 @@ export function CatalogFilters({
 
         <label className="block md:col-span-2">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
-            Diseno
+            Estilo
           </span>
           <select
-            value={filters.diseno}
-            onChange={(event) => updateFilter("diseno", event.target.value)}
+            value={filters.estiloCategoria}
+            onChange={(event) =>
+              updateFilter("estiloCategoria", event.target.value)
+            }
             className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
           >
             <option value="all">Todos</option>
-            {disenos.map((diseno) => (
-              <option key={diseno} value={diseno}>
-                {diseno}
+            {estilos.map((estilo) => (
+              <option key={estilo} value={estilo}>
+                {estilo}
               </option>
             ))}
           </select>
@@ -114,8 +118,12 @@ export function CatalogFilters({
             className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
           >
             <option value="all">Todas</option>
-            <option value="true">Manga corta</option>
-            <option value="false">Manga larga</option>
+            {mangas.includes("true") ? (
+              <option value="true">Manga corta</option>
+            ) : null}
+            {mangas.includes("false") ? (
+              <option value="false">Manga larga</option>
+            ) : null}
           </select>
         </label>
 

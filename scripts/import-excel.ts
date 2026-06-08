@@ -24,6 +24,23 @@ type ImportReport = {
   imagesWithoutProduct: string[];
 };
 
+const givenchySizeMap: Record<string, string> = {
+  "14 1/2": "S",
+  "14/2": "S",
+  "15": "S-M",
+  "15 1/2": "M",
+  "15/2": "M",
+  "16": "M-L",
+  "16 1/2": "L",
+  "16/2": "L",
+  "17": "L-XL",
+  "17 1/2": "XL",
+  "17/2": "XL",
+  "18": "XL-XXL",
+  "18 1/2": "XXL",
+  "18/2": "XXL",
+};
+
 function normalizeKey(value: string) {
   return value
     .normalize("NFD")
@@ -50,7 +67,9 @@ function toNumber(value: unknown) {
     return Number.isFinite(value) ? value : 0;
   }
 
-  const normalized = toText(value).replace(/[^\d.,-]/g, "").replace(",", ".");
+  const normalized = toText(value)
+    .replace(/[^\d.,-]/g, "")
+    .replace(",", ".");
   const parsed = Number(normalized);
 
   return Number.isFinite(parsed) ? parsed : 0;
@@ -61,6 +80,14 @@ function toList(value: unknown) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function toSizeList(value: unknown) {
+  return toList(value).map((size) => {
+    const normalizedSize = size.replace(/\s+/g, " ").trim();
+
+    return givenchySizeMap[normalizedSize] ?? normalizedSize;
+  });
 }
 
 function toBoolean(value: unknown) {
@@ -102,14 +129,16 @@ function hasProductImage(estilo: string) {
 }
 
 function rowToProduct(row: ExcelRow): Product {
-  const estilo = resolveStyleWithImageName(normalizeStyle(getCell(row, "Estilo")));
+  const estilo = resolveStyleWithImageName(
+    normalizeStyle(getCell(row, "Estilo")),
+  );
 
   return {
     id: estilo,
     estilo,
     patron: toText(getCell(row, "Patrón")),
     cantidad: toNumber(getCell(row, "Cantidad")),
-    tallas: toList(getCell(row, "Tallas")),
+    tallas: toSizeList(getCell(row, "Tallas")),
     colores: toList(getCell(row, "Colores")),
     caracteristicas: toText(getCell(row, "Características")),
     mangaCorta: toBoolean(getCell(row, "Manga corta")),
@@ -186,7 +215,9 @@ function printReport(report: ImportReport) {
     );
   }
 
-  console.log(`Imagenes sin producto asociado: ${report.imagesWithoutProduct.length}`);
+  console.log(
+    `Imagenes sin producto asociado: ${report.imagesWithoutProduct.length}`,
+  );
 
   if (report.imagesWithoutProduct.length > 0) {
     console.log(report.imagesWithoutProduct.join(", "));
@@ -209,9 +240,9 @@ function main() {
 
   const sheet = workbook.Sheets[firstSheetName];
   const rows = XLSX.utils.sheet_to_json<ExcelRow>(sheet, { defval: "" });
-  const products = mergeProductsByStyle(rows
-    .map(rowToProduct)
-    .filter((product) => product.estilo.length > 0));
+  const products = mergeProductsByStyle(
+    rows.map(rowToProduct).filter((product) => product.estilo.length > 0),
+  );
 
   const productStyles = new Set(products.map((product) => product.estilo));
   const imagesWithoutProduct = getProductImageNames().filter(

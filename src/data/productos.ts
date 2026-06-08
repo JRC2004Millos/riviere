@@ -7,7 +7,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "14/2"
+      "S"
     ],
     "colores": [
       "Rojo"
@@ -24,8 +24,8 @@ export const productos: Product[] = [
     "patron": "LM11",
     "cantidad": 3,
     "tallas": [
-      "15/2",
-      "16/2"
+      "M",
+      "L"
     ],
     "colores": [
       "Azul claro"
@@ -42,12 +42,12 @@ export const productos: Product[] = [
     "patron": "LM12",
     "cantidad": 9,
     "tallas": [
-      "17",
-      "16/2",
-      "16",
-      "15/2",
-      "15",
-      "14/2"
+      "L-XL",
+      "L",
+      "M-L",
+      "M",
+      "S-M",
+      "S"
     ],
     "colores": [
       "Azul claro"
@@ -64,10 +64,10 @@ export const productos: Product[] = [
     "patron": "LM25",
     "cantidad": 5,
     "tallas": [
-      "17/2",
-      "16/2",
-      "16",
-      "15"
+      "XL",
+      "L",
+      "M-L",
+      "S-M"
     ],
     "colores": [
       "Azul"
@@ -84,7 +84,7 @@ export const productos: Product[] = [
     "patron": "LM27",
     "cantidad": 2,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Azul"
@@ -101,13 +101,13 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 20,
     "tallas": [
-      "17",
-      "16/2",
-      "16",
-      "15/2",
-      "15",
-      "17/2",
-      "14/2"
+      "L-XL",
+      "L",
+      "M-L",
+      "M",
+      "S-M",
+      "XL",
+      "S"
     ],
     "colores": [
       "Azul claro",
@@ -125,7 +125,7 @@ export const productos: Product[] = [
     "patron": "LM02",
     "cantidad": 1,
     "tallas": [
-      "14/2"
+      "S"
     ],
     "colores": [
       "Rojo"
@@ -142,7 +142,7 @@ export const productos: Product[] = [
     "patron": "LM03",
     "cantidad": 1,
     "tallas": [
-      "17"
+      "L-XL"
     ],
     "colores": [
       "Mora"
@@ -159,11 +159,11 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 8,
     "tallas": [
-      "17/2",
-      "17",
-      "16/2",
-      "16",
-      "15/2"
+      "XL",
+      "L-XL",
+      "L",
+      "M-L",
+      "M"
     ],
     "colores": [
       "Azul"
@@ -180,8 +180,8 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 2,
     "tallas": [
-      "17",
-      "16/2"
+      "L-XL",
+      "L"
     ],
     "colores": [
       "Gris",
@@ -216,7 +216,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "16/2"
+      "L"
     ],
     "colores": [
       "Rosado"
@@ -233,7 +233,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17"
+      "L-XL"
     ],
     "colores": [
       "Rosado"
@@ -250,9 +250,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 9,
     "tallas": [
-      "17",
-      "15/2",
-      "15"
+      "L-XL",
+      "M",
+      "S-M"
     ],
     "colores": [
       "Azul",
@@ -270,13 +270,13 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 15,
     "tallas": [
-      "17",
-      "16/2",
-      "16",
-      "15/2",
-      "15",
-      "17/2",
-      "14/2"
+      "L-XL",
+      "L",
+      "M-L",
+      "M",
+      "S-M",
+      "XL",
+      "S"
     ],
     "colores": [
       "Azul claro",
@@ -294,7 +294,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17"
+      "L-XL"
     ],
     "colores": [
       "Azul claro"
@@ -311,7 +311,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15"
+      "S-M"
     ],
     "colores": [
       "Blanco"
@@ -328,7 +328,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17/2"
+      "XL"
     ],
     "colores": [
       "Azul"
@@ -345,7 +345,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "14/2"
+      "S"
     ],
     "colores": [
       "Rosado"
@@ -362,9 +362,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 6,
     "tallas": [
-      "17/2",
-      "16/2",
-      "14/2"
+      "XL",
+      "L",
+      "S"
     ],
     "colores": [
       "Morado"
@@ -381,7 +381,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17/2"
+      "XL"
     ],
     "colores": [
       "Naranja"
@@ -398,7 +398,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "16/2"
+      "L"
     ],
     "colores": [
       "Azul"
@@ -415,7 +415,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Morado"
@@ -432,7 +432,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 2,
     "tallas": [
-      "16/2"
+      "L"
     ],
     "colores": [
       "Azul claro"
@@ -449,9 +449,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 8,
     "tallas": [
-      "16/2",
-      "15/2",
-      "14/2"
+      "L",
+      "M",
+      "S"
     ],
     "colores": [
       "Azul claro"
@@ -468,8 +468,8 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 5,
     "tallas": [
-      "16/2",
-      "15/2"
+      "L",
+      "M"
     ],
     "colores": [
       "Menta",
@@ -487,7 +487,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Azul"
@@ -504,9 +504,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 8,
     "tallas": [
-      "16/2",
-      "15/2",
-      "14/2"
+      "L",
+      "M",
+      "S"
     ],
     "colores": [
       "Aqua",
@@ -524,8 +524,8 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 2,
     "tallas": [
-      "14/2",
-      "16/2"
+      "S",
+      "L"
     ],
     "colores": [
       "Azul"
@@ -542,7 +542,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "16"
+      "M-L"
     ],
     "colores": [
       "Negro"
@@ -560,11 +560,11 @@ export const productos: Product[] = [
     "cantidad": 9,
     "tallas": [
       "18",
-      "17",
-      "16/2",
-      "15/2",
-      "15",
-      "14/2"
+      "L-XL",
+      "L",
+      "M",
+      "S-M",
+      "S"
     ],
     "colores": [
       "Vino",
@@ -583,7 +583,7 @@ export const productos: Product[] = [
     "cantidad": 2,
     "tallas": [
       "18",
-      "16"
+      "M-L"
     ],
     "colores": [
       "Azul"
@@ -600,7 +600,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "16/2"
+      "L"
     ],
     "colores": [
       "Azul"
@@ -617,9 +617,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 5,
     "tallas": [
-      "16/2",
-      "15/2",
-      "14/2"
+      "L",
+      "M",
+      "S"
     ],
     "colores": [
       "Verde"
@@ -636,7 +636,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Aqua"
@@ -653,7 +653,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "14/2"
+      "S"
     ],
     "colores": [
       "Naranja"
@@ -670,11 +670,11 @@ export const productos: Product[] = [
     "patron": "VF13-14A",
     "cantidad": 8,
     "tallas": [
-      "16/2",
-      "16",
-      "15/2",
-      "15",
-      "14/2"
+      "L",
+      "M-L",
+      "M",
+      "S-M",
+      "S"
     ],
     "colores": [
       "Negro",
@@ -692,8 +692,8 @@ export const productos: Product[] = [
     "patron": "VF13-20A",
     "cantidad": 4,
     "tallas": [
-      "16/2",
-      "15/2"
+      "L",
+      "M"
     ],
     "colores": [
       "Azul"
@@ -710,7 +710,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "14/2"
+      "S"
     ],
     "colores": [
       "Rosado"
@@ -727,7 +727,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "16"
+      "M-L"
     ],
     "colores": [
       "Azul oscuro"
@@ -744,7 +744,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15"
+      "S-M"
     ],
     "colores": [
       "Azul claro"
@@ -761,9 +761,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 4,
     "tallas": [
-      "16/2",
-      "16",
-      "15/2"
+      "L",
+      "M-L",
+      "M"
     ],
     "colores": [
       "Negro"
@@ -780,9 +780,9 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 10,
     "tallas": [
-      "17",
-      "16/2",
-      "15/2"
+      "L-XL",
+      "L",
+      "M"
     ],
     "colores": [
       "Lila",
@@ -800,8 +800,8 @@ export const productos: Product[] = [
     "patron": "M103-07B",
     "cantidad": 2,
     "tallas": [
-      "14/2",
-      "15/2"
+      "S",
+      "M"
     ],
     "colores": [
       "Verde"
@@ -818,7 +818,7 @@ export const productos: Product[] = [
     "patron": "M103-105B",
     "cantidad": 2,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Verde"
@@ -835,7 +835,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Azul"
@@ -852,10 +852,10 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 7,
     "tallas": [
-      "16/2",
-      "17",
-      "16",
-      "15/2"
+      "L",
+      "L-XL",
+      "M-L",
+      "M"
     ],
     "colores": [
       "Navy",
@@ -874,7 +874,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17"
+      "L-XL"
     ],
     "colores": [
       "Azul claro"
@@ -891,8 +891,8 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 2,
     "tallas": [
-      "18/2",
-      "15/2"
+      "XXL",
+      "M"
     ],
     "colores": [
       "Rojo"
@@ -909,7 +909,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "18/2"
+      "XXL"
     ],
     "colores": [
       "Teal"
@@ -926,7 +926,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "18/2"
+      "XXL"
     ],
     "colores": [
       "Morado"
@@ -943,7 +943,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "15/2"
+      "M"
     ],
     "colores": [
       "Azul"
@@ -960,8 +960,8 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 2,
     "tallas": [
-      "14/2",
-      "15/2"
+      "S",
+      "M"
     ],
     "colores": [
       "Naranja"
@@ -978,7 +978,7 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 1,
     "tallas": [
-      "17"
+      "L-XL"
     ],
     "colores": [
       "Azul claro"
@@ -995,12 +995,12 @@ export const productos: Product[] = [
     "patron": "",
     "cantidad": 10,
     "tallas": [
-      "17/2",
-      "17",
-      "16/2",
-      "15/2",
-      "15",
-      "14/2"
+      "XL",
+      "L-XL",
+      "L",
+      "M",
+      "S-M",
+      "S"
     ],
     "colores": [
       "Rosado"
