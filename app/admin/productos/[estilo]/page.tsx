@@ -45,6 +45,7 @@ export default async function EditProductPage({
     "use server";
     const s = await auth();
     if (!s) redirect("/login");
+    if (!product) return;
 
     const precio = Number(formData.get("precio"));
     const descripcion = ((formData.get("descripcion") as string) ?? "").trim();
