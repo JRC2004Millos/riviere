@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "import-excel": "node --experimental-strip-types scripts/import-excel.ts",
     "start": "next start",
     "lint": "next lint"
