@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/src/lib/prisma";
 import { validateWebhookSignature } from "@/src/lib/wompi";
+import { fulfillOrder } from "@/src/lib/order-fulfillment";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,25 +29,17 @@ export async function POST(req: NextRequest) {
       };
 
       if (status === "APPROVED") {
-        await prisma.order
-          .update({
-            where: { reference },
-            data: { status: "PAID", wompiTransactionId },
-          })
-          .catch(() => {
-            // Order not found — likely a test webhook, ignore
-          });
+        await fulfillOrder(reference, "PAID", wompiTransactionId).catch(
+          console.error,
+        );
       } else if (
         status === "DECLINED" ||
         status === "ERROR" ||
         status === "VOIDED"
       ) {
-        await prisma.order
-          .update({
-            where: { reference },
-            data: { status: "FAILED", wompiTransactionId },
-          })
-          .catch(() => {});
+        await fulfillOrder(reference, "FAILED", wompiTransactionId).catch(
+          console.error,
+        );
       }
     }
 
