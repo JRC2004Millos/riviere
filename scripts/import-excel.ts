@@ -211,7 +211,7 @@ function rowsToSKUs(rawRows: Product[]): RawSKU[] {
             talla,
             color,
             cantidad: qtyPerVariante,
-            ubicacion: row.ubicacion,
+            ubicacion: row.ubicacion ?? "",
           });
         }
       }
