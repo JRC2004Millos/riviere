@@ -1,5 +1,39 @@
 import { createHash, timingSafeEqual } from "crypto";
 
+function wompiBaseUrl(): string {
+  const key = process.env.WOMPI_PRIVATE_KEY ?? process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY ?? "";
+  return key.includes("_test_")
+    ? "https://sandbox.wompi.co/v1"
+    : "https://production.wompi.co/v1";
+}
+
+export type WompiTransaction = {
+  id: string;
+  reference: string;
+  status: "APPROVED" | "DECLINED" | "ERROR" | "VOIDED" | "PENDING";
+  amount_in_cents: number;
+  currency: string;
+};
+
+export async function getWompiTransaction(
+  wompiId: string,
+): Promise<WompiTransaction | null> {
+  const privateKey = process.env.WOMPI_PRIVATE_KEY;
+  if (!privateKey) return null;
+
+  try {
+    const res = await fetch(`${wompiBaseUrl()}/transactions/${wompiId}`, {
+      headers: { Authorization: `Bearer ${privateKey}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { data?: WompiTransaction };
+    return body.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export function generateIntegrityHash(
   reference: string,
   amountInCents: number,

@@ -8,7 +8,7 @@ const values = [
     copy: "Camisas Givenchy seleccionadas por calidad, tacto y presencia.",
   },
   {
-    title: "Diseno",
+    title: "Diseño",
     copy: "Seleccionadas por RIVIERE, enfocada en proporción, caída y detalle.",
   },
   {

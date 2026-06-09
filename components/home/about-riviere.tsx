@@ -47,7 +47,7 @@ export function AboutRiviere() {
               Contáctanos
             </h3>
             <p className="mt-4">
-              WhatsApp: +57 300 1368601
+              WhatsApp: +57 301 125 8495
               <br />
               Instagram: @Riviere_co
               <br />

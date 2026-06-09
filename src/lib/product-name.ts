@@ -4,7 +4,7 @@ export function generateProductName(
   mangaCorta: boolean,
 ): string {
   const cat = caracteristicas.trim() || "Diseño";
-  const color = (colores[0] ?? "").toLowerCase();
+  const colorStr = colores.filter(Boolean).join("/").toLowerCase();
   const suffix = mangaCorta ? " manga corta" : "";
-  return `Camisa ${cat} ${color}${suffix}`.trim();
+  return `Camisa ${cat} ${colorStr}${suffix}`.trim();
 }

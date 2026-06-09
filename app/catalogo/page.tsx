@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { CatalogGrid } from "@/components/catalog/catalog-grid";
 import { getAllProducts } from "@/src/lib/products-store";
 
@@ -21,7 +22,9 @@ export default async function CatalogoPage() {
           </p>
         </div>
       </section>
-      <CatalogGrid products={productos} />
+      <Suspense>
+        <CatalogGrid products={productos} />
+      </Suspense>
     </main>
   );
 }

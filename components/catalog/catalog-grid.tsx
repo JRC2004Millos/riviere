@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   CatalogFilters,
@@ -23,7 +24,7 @@ const initialFilters: CatalogFilterState = {
   sort: "default",
 };
 
-const tallaOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+const tallaOrder = ["S", "S-M", "M", "M-L", "L", "L-XL", "XL", "XL-XXL", "XXL"];
 const productsPerPage = 8;
 
 type FilterKey = keyof Pick<
@@ -81,7 +82,11 @@ function sortTallas(left: string, right: string) {
 }
 
 export function CatalogGrid({ products }: CatalogGridProps) {
-  const [filters, setFilters] = useState<CatalogFilterState>(initialFilters);
+  const searchParams = useSearchParams();
+  const [filters, setFilters] = useState<CatalogFilterState>(() => ({
+    ...initialFilters,
+    estiloCategoria: searchParams.get("estilo") ?? "all",
+  }));
   const [visibleCount, setVisibleCount] = useState(productsPerPage);
 
   const handleFilterChange = (nextFilters: CatalogFilterState) => {

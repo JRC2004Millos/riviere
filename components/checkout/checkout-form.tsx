@@ -58,6 +58,7 @@ export function CheckoutForm() {
           items: items.map((i) => ({
             productId: i.id,
             talla: i.talla,
+            color: i.color,
             cantidad: i.cantidad,
           })),
           customer: {
@@ -108,6 +109,7 @@ export function CheckoutForm() {
                 </p>
                 <p className="mt-1 text-xs uppercase tracking-[0.12em] text-riviere-smoke">
                   Talla {item.talla}
+                  {item.color ? ` · ${item.color}` : ""}
                   {" · "}
                   {item.cantidad === 1 ? "1 unidad" : `${item.cantidad} unidades`}
                 </p>
