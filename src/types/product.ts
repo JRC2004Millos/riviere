@@ -11,5 +11,5 @@ export interface Product {
   estado: string;
   hasImage: boolean;
   // ubicacion por fila de Excel: se propaga a cada variante de esa fila
-  ubicacion: string;
+  ubicacion?: string;
 }
