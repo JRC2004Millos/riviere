@@ -79,7 +79,7 @@ export function Hero() {
           {/* Logo — versión blanca en mobile, oscura en desktop */}
           <div className="relative h-16 w-full max-w-[340px] md:hidden">
             <Image
-              src="/images/RIVIERE blanco.png"
+              src="/images/RIVIERE logo lateral blanco.png"
               alt="RIVIERE"
               fill
               priority
@@ -89,7 +89,7 @@ export function Hero() {
           </div>
           <div className="relative hidden h-20 w-full max-w-[430px] md:block md:h-24">
             <Image
-              src="/images/RIVIERE.png"
+              src="/images/RIVIERE logo lateral.png"
               alt="RIVIERE"
               fill
               priority
@@ -105,14 +105,25 @@ export function Hero() {
           </p>
 
           {/* CTA */}
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="mt-9 border-white/80 bg-transparent text-white hover:bg-white hover:text-[#111] md:border-[#111] md:bg-white/20 md:text-[#111] md:hover:bg-[#111] md:hover:text-white"
-          >
-            <Link href="/catalogo">Ver Colección</Link>
-          </Button>
+          <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-56 border-white/80 bg-transparent text-white hover:bg-white hover:text-[#111] md:border-[#111] md:bg-white/20 md:text-[#111] md:hover:bg-[#111] md:hover:text-white"
+            >
+              <Link href="/#coleccion">Ver Colecciones</Link>
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-56 border-white/80 bg-transparent text-white hover:bg-white hover:text-[#111] md:border-[#111] md:bg-white/20 md:text-[#111] md:hover:bg-[#111] md:hover:text-white"
+            >
+              <Link href="/catalogo">Ver Catálogo</Link>
+            </Button>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -8,10 +8,11 @@ import {
 } from "react";
 
 export type CartItem = {
-  cartKey: string;  // `${estilo}-${talla}` — clave única en el carrito
+  cartKey: string;  // `${estilo}-${color}-${talla}` o `${estilo}-${talla}`
   id: string;
   estilo: string;
   talla: string;
+  color?: string;
   precio: number;
   imagen: string;
   stockMax: number; // snapshot de cantidad disponible al agregar
@@ -20,7 +21,7 @@ export type CartItem = {
 
 type CartAction =
   | { type: "HYDRATE"; items: CartItem[] }
-  | { type: "ADD"; item: Omit<CartItem, "cantidad"> }
+  | { type: "ADD"; item: Omit<CartItem, "cantidad">; cantidad?: number }
   | { type: "REMOVE"; cartKey: string }
   | { type: "UPDATE_QTY"; cartKey: string; cantidad: number }
   | { type: "CLEAR" };
@@ -33,17 +34,23 @@ function reducer(
     case "HYDRATE":
       return { items: action.items };
     case "ADD": {
+      const qty = action.cantidad ?? 1;
       const exists = state.items.find((i) => i.cartKey === action.item.cartKey);
       if (exists) {
         return {
           items: state.items.map((i) =>
             i.cartKey === action.item.cartKey
-              ? { ...i, cantidad: Math.min(i.cantidad + 1, i.stockMax) }
+              ? { ...i, cantidad: Math.min(i.cantidad + qty, i.stockMax) }
               : i,
           ),
         };
       }
-      return { items: [...state.items, { ...action.item, cantidad: 1 }] };
+      return {
+        items: [
+          ...state.items,
+          { ...action.item, cantidad: Math.min(qty, action.item.stockMax) },
+        ],
+      };
     }
     case "REMOVE":
       return { items: state.items.filter((i) => i.cartKey !== action.cartKey) };
@@ -66,7 +73,7 @@ type CartContextValue = {
   items: CartItem[];
   totalItems: number;
   subtotal: number;
-  addItem: (item: Omit<CartItem, "cantidad">) => void;
+  addItem: (item: Omit<CartItem, "cantidad">, cantidad?: number) => void;
   removeItem: (cartKey: string) => void;
   updateQty: (cartKey: string, cantidad: number) => void;
   clearCart: () => void;
@@ -110,7 +117,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         items: state.items,
         totalItems,
         subtotal,
-        addItem: (item) => dispatch({ type: "ADD", item }),
+        addItem: (item, cantidad) => dispatch({ type: "ADD", item, cantidad }),
         removeItem: (cartKey) => dispatch({ type: "REMOVE", cartKey }),
         updateQty: (cartKey, cantidad) =>
           dispatch({ type: "UPDATE_QTY", cartKey, cantidad }),

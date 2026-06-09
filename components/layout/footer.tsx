@@ -76,7 +76,7 @@ export function Footer() {
         <div>
           <div className="relative h-8 w-36">
             <Image
-              src="/images/RIVIERE.png"
+              src="/images/RIVIERE logo lateral.png"
               alt="RIVIERE"
               fill
               sizes="144px"
@@ -135,7 +135,7 @@ export function Footer() {
         </div>
 
         {/* Contacto */}
-        <div className="space-y-4 text-sm">
+        <div className="space-y-4 text-sm" id="contacto">
           <p className="mb-5 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
             Contacto
           </p>
@@ -173,15 +173,6 @@ export function Footer() {
             </span>
             <span>{CONTACT.email}</span>
           </a>
-
-          <div className="pt-2">
-            <Link
-              href="/catalogo"
-              className="block text-riviere-ink/80 transition-colors hover:text-riviere-ink"
-            >
-              Catálogo
-            </Link>
-          </div>
         </div>
       </div>
 

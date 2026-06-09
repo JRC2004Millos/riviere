@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/src/context/cart-context";
 
 const navItems = [
+  { label: "Inicio", href: "/" },
   { label: "Catálogo", href: "/catalogo" },
   { label: "Colecciones", href: "/#coleccion" },
-  { label: "Contacto", href: "/contacto" },
+  { label: "Contacto", href: "/#contacto" },
 ];
 
 export function Navbar() {

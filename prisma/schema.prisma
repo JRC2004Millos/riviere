@@ -8,22 +8,34 @@ datasource db {
 }
 
 model Product {
-  id              String   @id
-  estilo          String   @unique
-  patron          String   @default("")
-  cantidad        Int
-  tallas          String[]
-  colores         String[]
-  caracteristicas String   @default("")
-  mangaCorta      Boolean  @default(false)
+  id              String           @id
+  estilo          String           @unique
+  patron          String           @default("")
+  caracteristicas String           @default("")
+  mangaCorta      Boolean          @default(false)
   precio          Int
-  estado          String   @default("")
-  hasImage        Boolean  @default(false)
+  estado          String           @default("")
+  hasImage        Boolean          @default(false)
   descripcion     String?
-  nombre          String   @default("")
+  nombre          String           @default("")
   material        String?
+  variantes       ProductVariant[]
 
   @@map("products")
+}
+
+// Un registro por combinación (talla, color). color="" si el producto es de un solo color.
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  talla     String
+  color     String  @default("")
+  cantidad  Int     @default(0)
+  ubicacion String  @default("")
+
+  @@unique([productId, talla, color])
+  @@map("product_variants")
 }
 
 enum OrderStatus {
@@ -57,6 +69,7 @@ model OrderItem {
   estilo    String
   nombre    String
   talla     String
+  color     String @default("")
   precio    Int
   cantidad  Int
 

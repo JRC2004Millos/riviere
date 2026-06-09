@@ -1,23 +1,39 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 const products = [
   {
-    name: "Oxford Noir",
+    name: "Oxford",
+    slug: "Oxford",
     description: "Camisa estructurada en algodón compacto.",
-    image: "/images/riviere-card-oxford.png",
+    image: "/images/OXFORD.png",
   },
   {
-    name: "Linen Sand",
+    name: "Formal",
+    slug: "Traje",
     description: "Textura ligera para una silueta relajada.",
-    image: "/images/riviere-card-linen.png",
+    image: "/images/formal.png",
   },
   {
-    name: "Evening White",
+    name: "Cuadros",
+    slug: "Cuadros",
     description: "Blanco preciso con cuello de presencia limpia.",
-    image: "/images/riviere-card-white.png",
+    image: "/images/cuadros.png",
+  },
+  {
+    name: "Rayas",
+    slug: "Rayas",
+    description: "Rayas verticales para una presencia alargada.",
+    image: "/images/rayas.png",
+  },
+  {
+    name: "Diseños",
+    slug: "Diseños",
+    description: "Piezas con detalles de diseño para presencia editorial.",
+    image: "/images/disenos.png",
   },
 ];
 
@@ -40,34 +56,43 @@ export function FeaturedCollection() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        {/*
+         * flex-wrap + justify-center centra la última fila sin cambiar tamaños.
+         * Cada item ocupa el mismo ancho que ocuparía en grid-cols-2/3/4/5.
+         */}
+        <div className="flex flex-wrap justify-center gap-4">
           {products.map((product, index) => (
-            <motion.article
+            <Link
               key={product.name}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: index * 0.08 }}
-              className="group border border-riviere-ink/10 bg-riviere-stone"
+              href={`/catalogo?estilo=${product.slug}`}
+              className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)] xl:w-[calc(20%-0.8rem)]"
             >
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-cover transition duration-700 group-hover:scale-[1.03]"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-medium uppercase tracking-[0.12em]">
-                  {product.name}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-riviere-smoke">
-                  {product.description}
-                </p>
-              </div>
-            </motion.article>
+              <motion.article
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                className="group h-full border border-riviere-ink/10 bg-riviere-stone"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                    className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-medium uppercase tracking-[0.12em]">
+                    {product.name}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-riviere-smoke">
+                    {product.description}
+                  </p>
+                </div>
+              </motion.article>
+            </Link>
           ))}
         </div>
       </div>

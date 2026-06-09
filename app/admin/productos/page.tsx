@@ -84,7 +84,8 @@ export default async function AdminProductosPage() {
                     {fmt.format(p.precio)}
                   </td>
                   <td className="px-4 py-2.5 text-riviere-smoke">
-                    {p.colores[0] ?? "—"}
+                    {p.colores.length > 0 ? p.colores[0] : "—"}
+                    {p.colores.length > 1 ? ` +${p.colores.length - 1}` : ""}
                   </td>
                   <td className="px-4 py-2.5 text-riviere-smoke">
                     {p.tallas.slice(0, 3).join(", ")}

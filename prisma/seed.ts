@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { productos } from "../src/data/productos";
+import { productos, skus } from "../src/data/productos";
 import { generateProductName } from "../src/lib/product-name";
 
 const prisma = new PrismaClient();
@@ -10,7 +10,17 @@ const RENAMES: Record<string, string> = {
 };
 
 async function main() {
-  console.log(`Seeding ${productos.length} products...`);
+  console.log(`Seeding ${productos.length} products, ${skus.length} variants...`);
+
+  // Índice de SKUs por estilo para búsqueda rápida
+  const skusByEstilo = new Map<string, typeof skus>();
+  for (const sku of skus) {
+    const list = skusByEstilo.get(sku.estilo) ?? [];
+    list.push(sku);
+    skusByEstilo.set(sku.estilo, list);
+  }
+
+  let variantCount = 0;
 
   for (const p of productos) {
     const caracteristicas = RENAMES[p.caracteristicas] ?? p.caracteristicas;
@@ -23,9 +33,6 @@ async function main() {
         id: p.id,
         estilo: p.estilo,
         patron: p.patron,
-        cantidad: p.cantidad,
-        tallas: p.tallas,
-        colores: p.colores,
         caracteristicas,
         mangaCorta: p.mangaCorta,
         precio: p.precio,
@@ -34,9 +41,43 @@ async function main() {
         nombre,
       },
     });
+
+    const productSKUs = skusByEstilo.get(p.estilo);
+
+    if (productSKUs && productSKUs.length > 0) {
+      // Usa las cantidades exactas del Excel (una fila = una variante)
+      for (const sku of productSKUs) {
+        await prisma.productVariant.upsert({
+          where: {
+            productId_talla_color: { productId: p.id, talla: sku.talla, color: sku.color },
+          },
+          update: {},
+          create: { productId: p.id, talla: sku.talla, color: sku.color, cantidad: sku.cantidad, ubicacion: sku.ubicacion ?? "" },
+        });
+        variantCount++;
+      }
+    } else {
+      // Fallback: distribución uniforme si no hay SKUs (no debería ocurrir)
+      const colores = p.colores.length > 0 ? p.colores : [""];
+      const numVariantes = p.tallas.length * colores.length;
+      const qty = numVariantes > 0 ? Math.floor(p.cantidad / numVariantes) : 0;
+
+      for (const talla of p.tallas) {
+        for (const color of colores) {
+          await prisma.productVariant.upsert({
+            where: {
+              productId_talla_color: { productId: p.id, talla, color },
+            },
+            update: {},
+            create: { productId: p.id, talla, color, cantidad: qty },
+          });
+          variantCount++;
+        }
+      }
+    }
   }
 
-  console.log("Seed complete.");
+  console.log(`Seed complete: ${productos.length} products, ${variantCount} variants.`);
 }
 
 main()

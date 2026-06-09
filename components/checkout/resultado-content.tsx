@@ -12,50 +12,83 @@ type OrderResponse = {
   total: number;
 };
 
+const MAX_RETRIES = 8;
+const RETRY_DELAY = 2500;
+
 export function ResultadoContent() {
   const params = useSearchParams();
-  const ref = params.get("ref");
+
+  // Wompi solo agrega ?id={txn_id} al redirect URL
+  const wompiId = params.get("id");
+  // Fallback: si nuestra URL ?ref=xxx sobrevivió (depende de la versión de Wompi)
+  const fallbackRef = params.get("ref");
 
   const [order, setOrder] = useState<OrderResponse | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<"not_found" | "no_id" | null>(null);
 
   useEffect(() => {
-    if (!ref) {
-      setNotFound(true);
+    if (!wompiId && !fallbackRef) {
+      setError("no_id");
       return;
     }
 
     let attempts = 0;
-    const MAX_ATTEMPTS = 20;
     let timer: ReturnType<typeof setTimeout>;
+    let cancelled = false;
 
     const poll = async () => {
+      if (cancelled) return;
       try {
-        const res = await fetch(`/api/orders/${ref}`);
+        const url = wompiId
+          ? `/api/checkout/transaction?id=${encodeURIComponent(wompiId)}`
+          : `/api/orders/${encodeURIComponent(fallbackRef!)}`;
+
+        const res = await fetch(url);
+
         if (res.status === 404) {
-          setNotFound(true);
+          if (!cancelled) setError("not_found");
           return;
         }
+
         const data = (await res.json()) as OrderResponse;
-        setOrder(data);
-        if (data.status === "PENDING_PAYMENT" && attempts < MAX_ATTEMPTS) {
+        if (!cancelled) setOrder(data);
+
+        // Seguir reintentando si sigue pendiente
+        if (data.status === "PENDING_PAYMENT" && attempts < MAX_RETRIES) {
           attempts++;
-          timer = setTimeout(poll, 2000);
+          timer = setTimeout(poll, RETRY_DELAY);
         }
       } catch {
-        // Network error — retry
-        if (attempts < MAX_ATTEMPTS) {
+        if (attempts < MAX_RETRIES) {
           attempts++;
-          timer = setTimeout(poll, 3000);
+          timer = setTimeout(poll, RETRY_DELAY);
         }
       }
     };
 
     poll();
-    return () => clearTimeout(timer);
-  }, [ref]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [wompiId, fallbackRef]);
 
-  if (notFound || !ref) {
+  // ── Sin datos de Wompi ──────────────────────────────────────────────────────
+  if (error === "no_id") {
+    return (
+      <div className="container flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
+        <p className="text-sm uppercase tracking-[0.2em]">
+          No se recibió información de la transacción
+        </p>
+        <Button asChild variant="ghost" className="mt-8">
+          <Link href="/carrito">Volver al carrito</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  // ── Orden no encontrada ─────────────────────────────────────────────────────
+  if (error === "not_found") {
     return (
       <div className="container flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
         <p className="text-sm uppercase tracking-[0.2em]">
@@ -68,6 +101,7 @@ export function ResultadoContent() {
     );
   }
 
+  // ── Cargando / pendiente ────────────────────────────────────────────────────
   if (!order || order.status === "PENDING_PAYMENT") {
     return (
       <div className="container flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
@@ -75,13 +109,16 @@ export function ResultadoContent() {
         <p className="text-xs uppercase tracking-[0.2em] text-riviere-smoke">
           Verificando pago…
         </p>
-        <p className="mt-2 text-[11px] tracking-widest text-riviere-smoke/50">
-          {ref}
-        </p>
+        {order?.reference && (
+          <p className="mt-2 text-[11px] tracking-widest text-riviere-smoke/50">
+            {order.reference}
+          </p>
+        )}
       </div>
     );
   }
 
+  // ── Pago aprobado ───────────────────────────────────────────────────────────
   if (order.status === "PAID") {
     return (
       <div className="container flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
@@ -92,7 +129,7 @@ export function ResultadoContent() {
           Pago confirmado
         </h1>
         <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-riviere-smoke">
-          Ref. {ref}
+          Ref. {order.reference}
         </p>
         <p className="mt-4 max-w-xs text-sm text-riviere-smoke">
           Recibirás un correo de confirmación con los detalles de tu pedido.
@@ -108,7 +145,7 @@ export function ResultadoContent() {
     );
   }
 
-  // FAILED or CANCELLED
+  // ── Pago fallido / cancelado ────────────────────────────────────────────────
   return (
     <div className="container flex min-h-[60vh] flex-col items-center justify-center py-24 text-center">
       <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-full border border-red-200 bg-red-50">
@@ -118,11 +155,10 @@ export function ResultadoContent() {
         Pago no completado
       </h1>
       <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-riviere-smoke">
-        Ref. {ref}
+        Ref. {order.reference}
       </p>
       <p className="mt-4 max-w-xs text-sm text-riviere-smoke">
-        El pago no fue procesado. Puedes volver al carrito e intentarlo de
-        nuevo.
+        El pago no fue procesado. Puedes volver al carrito e intentarlo de nuevo.
       </p>
       <div className="mt-12 flex flex-wrap justify-center gap-4">
         <Button
