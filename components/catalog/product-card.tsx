@@ -49,9 +49,27 @@ function ProductCardComponent({ product }: ProductCardProps) {
               {product.estilo}
             </p>
           </div>
-          <p className="text-sm text-riviere-ink">
-            {currencyFormatter.format(product.precio)}
-          </p>
+          <div className="text-right">
+            {product.dcto ? (
+              <>
+                <p className="text-xs text-riviere-smoke line-through">
+                  {currencyFormatter.format(product.precio)}
+                </p>
+                <p className="text-sm font-medium text-riviere-ink">
+                  {currencyFormatter.format(
+                    Math.round(product.precio * (1 - product.dcto / 100)),
+                  )}
+                </p>
+                <span className="mt-0.5 inline-block text-[10px] uppercase tracking-[0.1em] text-red-600">
+                  -{product.dcto}%
+                </span>
+              </>
+            ) : (
+              <p className="text-sm text-riviere-ink">
+                {currencyFormatter.format(product.precio)}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-4">

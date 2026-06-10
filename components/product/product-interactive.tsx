@@ -18,6 +18,7 @@ interface Props {
   estilo: string;
   nombre: string;
   precio: number;
+  dcto: number | null;
   imagenDefault: string;
   variantes: ProductVariant[];
   tallas: string[];   // ya ordenadas (vienen de products-store)
@@ -33,6 +34,7 @@ export function ProductInteractive({
   estilo,
   nombre,
   precio,
+  dcto,
   imagenDefault,
   variantes,
   tallas,
@@ -42,6 +44,7 @@ export function ProductInteractive({
   mangaCorta,
   disponible,
 }: Props) {
+  const precioFinal = dcto ? Math.round(precio * (1 - dcto / 100)) : precio;
   const { addItem, items } = useCart();
 
   const tieneColores = colores.length > 1;
@@ -106,7 +109,7 @@ export function ProductInteractive({
         estilo,
         talla: tallaSeleccionada,
         color: colorSeleccionado || undefined,
-        precio,
+        precio: precioFinal,
         imagen: imagenActual,
         stockMax: variantStock,
       },
@@ -159,9 +162,21 @@ export function ProductInteractive({
           {estilo}
         </p>
 
-        <p className="mt-5 text-2xl font-light">
-          {currencyFormatter.format(precio)}
-        </p>
+        <div className="mt-5 flex items-baseline gap-3">
+          <p className="text-2xl font-light">
+            {currencyFormatter.format(precioFinal)}
+          </p>
+          {dcto && (
+            <>
+              <p className="text-sm text-riviere-smoke line-through">
+                {currencyFormatter.format(precio)}
+              </p>
+              <span className="text-xs uppercase tracking-[0.1em] text-red-600">
+                -{dcto}%
+              </span>
+            </>
+          )}
+        </div>
 
         <div className="mt-8 space-y-7 border-t border-riviere-ink/10 pt-8">
           <div>
@@ -241,6 +256,12 @@ export function ProductInteractive({
                   );
                 })}
               </div>
+              <Link
+                href="/guia-de-tallas"
+                className="mt-3 inline-block text-[11px] uppercase tracking-[0.14em] text-riviere-smoke/60 transition-colors hover:text-riviere-ink"
+              >
+                Guía de tallas →
+              </Link>
             </div>
 
             {/* Cantidad */}

@@ -45,6 +45,7 @@ export default async function ProductPage({
           estilo={product.estilo}
           nombre={product.nombre}
           precio={product.precio}
+          dcto={product.dcto}
           imagenDefault={getProductImage(product.estilo)}
           variantes={product.variantes}
           tallas={product.tallas}

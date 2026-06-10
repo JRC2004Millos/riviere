@@ -10,15 +10,15 @@ export default async function CatalogoPage() {
     <main className="bg-riviere-bone pt-28">
       <section className="container pb-12 pt-14 md:pb-16 md:pt-20">
         <p className="text-xs uppercase tracking-[0.24em] text-riviere-smoke">
-          Catalogo RIVIERE
+          Catálogo RIVIERE
         </p>
         <div className="mt-4 grid gap-6 md:grid-cols-[1.2fr_0.8fr] md:items-end">
           <h1 className="text-4xl font-medium uppercase tracking-[0.1em] md:text-6xl">
-            Camisas para una presencia precisa
+            ARCHIVO GIVENCHY
           </h1>
           <p className="max-w-md text-sm leading-6 text-riviere-smoke md:justify-self-end">
-            Una seleccion local de estilos RIVIERE para validar busqueda,
-            filtros y ordenamiento antes de conectar base de datos.
+            Una curaduría de camisas Givenchy que privilegia la sobriedad, la
+            calidad y la permanencia por encima de las tendencias.
           </p>
         </div>
       </section>

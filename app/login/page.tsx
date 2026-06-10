@@ -8,7 +8,7 @@ export default function LoginPage() {
         <div className="mb-10 flex justify-center">
           <div className="relative h-10 w-36">
             <Image
-              src="/images/RIVIERE.png"
+              src="/images/Riviere logo sin bordes.png"
               alt="RIVIERE"
               fill
               className="object-contain"

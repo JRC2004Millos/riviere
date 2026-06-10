@@ -83,10 +83,6 @@ export function Footer() {
               className="object-contain object-left"
             />
           </div>
-          <p className="mt-5 max-w-xs text-sm leading-[1.75] text-riviere-smoke">
-            Camisas Givenchy con una lectura sobria, precisa y contemporánea.
-            Seleccionadas por Riviere para el hombre moderno.
-          </p>
 
           {/* Redes sociales */}
           <div className="mt-7 flex items-center gap-4">

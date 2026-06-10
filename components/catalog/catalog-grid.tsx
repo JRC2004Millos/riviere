@@ -42,7 +42,9 @@ function getFilteredProducts(
   return products.filter((product) => {
     const matchesSearch =
       ignoredFilter === "search" ||
-      product.estilo.toLowerCase().includes(normalizedSearch);
+      !normalizedSearch ||
+      product.estilo.toLowerCase().includes(normalizedSearch) ||
+      product.nombre.toLowerCase().includes(normalizedSearch);
     const matchesColor =
       ignoredFilter === "color" ||
       filters.color === "all" ||
@@ -173,7 +175,7 @@ export function CatalogGrid({ products }: CatalogGridProps) {
 
         <div className="mt-8 flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-riviere-smoke">
           <p>{filteredProducts.length} productos</p>
-          <p>{products.length} piezas editadas</p>
+          <p>{products.length} piezas exclusivas</p>
         </div>
 
         {filteredProducts.length > 0 ? (
