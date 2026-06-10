@@ -17,8 +17,8 @@ export function AboutRiviere() {
               Quiénes somos
             </h3>
             <p className="mt-4">
-              RIVIERE es una tienda en línea de camisas Givenchy 100%
-              originales, seleccionadas con una lectura premium y editorial.
+              Somos una tienda en línea de camisas Givenchy 100% originales con
+              precios espectaculares.
             </p>
           </div>
 
@@ -27,8 +27,8 @@ export function AboutRiviere() {
               Precio y origen
             </h3>
             <p className="mt-4">
-              Trabajamos camisas originales de colecciones antiguas (2007–2013),
-              completamente nuevas, que conservan calidad, estilo y vigencia.
+              Elegimos cuidadosamente camisas totalmente nuevas de colecciones
+              antiguas (2007-2013), las cuales conservan calidad y estilo.
             </p>
           </div>
 
@@ -38,7 +38,8 @@ export function AboutRiviere() {
             </h3>
             <p className="mt-4">Envíos a todo el país.</p>
             <p className="mt-4">
-              Pago contraentrega y envíos GRATIS (únicamente aplica para Bogotá)
+              Envíos a todo el país Pago contraentrega y envíos GRATIS
+              (únicamente en Bogotá*)
             </p>
           </div>
 

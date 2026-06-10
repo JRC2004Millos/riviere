@@ -1,7 +1,8 @@
 "use client";
 
-import { SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type SortValue = "default" | "price-asc" | "price-desc";
@@ -24,6 +25,9 @@ type CatalogFiltersProps = {
   onChange: (filters: CatalogFilterState) => void;
 };
 
+const CONTROL_CLS =
+  "mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink";
+
 export function CatalogFilters({
   filters,
   colors,
@@ -43,43 +47,51 @@ export function CatalogFilters({
 
   return (
     <aside className="border-y border-riviere-ink/10 py-6">
+      {/* Toggle solo visible en móvil */}
       <button
         type="button"
         className="flex w-full items-center justify-between text-xs uppercase tracking-[0.18em] text-riviere-ink md:hidden"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setOpen((v) => !v)}
       >
         Filtros
         <SlidersHorizontal className="h-4 w-4" />
       </button>
 
+      {/*
+        Móvil (abierto): grid 2 columnas → 3 en sm
+        Desktop (md+): flex fila única, siempre visible
+      */}
       <div
         className={cn(
-          "grid gap-4 md:grid md:grid-cols-6",
-          open ? "mt-6 grid" : "hidden md:grid",
+          "md:flex md:flex-row md:items-start md:gap-3",
+          open ? "mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3" : "hidden",
         )}
       >
-        <label className="block md:col-span-1">
+        {/* Buscar */}
+        <label className="block flex-[2]">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Buscar
           </span>
-          <input
-            value={filters.search}
-            onChange={(event) => updateFilter("search", event.target.value)}
-            placeholder="S13"
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
-          />
+          <div className="relative mt-3">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-riviere-smoke/50" />
+            <input
+              value={filters.search}
+              onChange={(e) => updateFilter("search", e.target.value)}
+              placeholder="Buscar"
+              className="h-11 w-full border border-riviere-ink/12 bg-transparent pl-8 pr-3 text-sm outline-none transition focus:border-riviere-ink"
+            />
+          </div>
         </label>
 
-        <label className="block md:col-span-2">
+        {/* Estilo */}
+        <label className="block flex-[2]">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Estilo
           </span>
           <select
             value={filters.estiloCategoria}
-            onChange={(event) =>
-              updateFilter("estiloCategoria", event.target.value)
-            }
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
+            onChange={(e) => updateFilter("estiloCategoria", e.target.value)}
+            className={CONTROL_CLS}
           >
             <option value="all">Todos</option>
             {estilos.map((estilo) => (
@@ -90,14 +102,15 @@ export function CatalogFilters({
           </select>
         </label>
 
-        <label className="block">
+        {/* Color */}
+        <label className="block flex-1">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Color
           </span>
           <select
             value={filters.color}
-            onChange={(event) => updateFilter("color", event.target.value)}
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
+            onChange={(e) => updateFilter("color", e.target.value)}
+            className={CONTROL_CLS}
           >
             <option value="all">Todos</option>
             {colors.map((color) => (
@@ -108,33 +121,31 @@ export function CatalogFilters({
           </select>
         </label>
 
-        <label className="block">
+        {/* Manga */}
+        <label className="block flex-1">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Manga
           </span>
           <select
             value={filters.mangaCorta}
-            onChange={(event) => updateFilter("mangaCorta", event.target.value)}
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
+            onChange={(e) => updateFilter("mangaCorta", e.target.value)}
+            className={CONTROL_CLS}
           >
             <option value="all">Todas</option>
-            {mangas.includes("true") ? (
-              <option value="true">Manga corta</option>
-            ) : null}
-            {mangas.includes("false") ? (
-              <option value="false">Manga larga</option>
-            ) : null}
+            {mangas.includes("true") && <option value="true">Corta</option>}
+            {mangas.includes("false") && <option value="false">Larga</option>}
           </select>
         </label>
 
-        <label className="block">
+        {/* Talla */}
+        <label className="block flex-1">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Talla
           </span>
           <select
             value={filters.talla}
-            onChange={(event) => updateFilter("talla", event.target.value)}
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
+            onChange={(e) => updateFilter("talla", e.target.value)}
+            className={CONTROL_CLS}
           >
             <option value="all">Todas</option>
             {tallas.map((talla) => (
@@ -143,22 +154,27 @@ export function CatalogFilters({
               </option>
             ))}
           </select>
+          <Link
+            href="/guia-de-tallas"
+            className="mt-1.5 block text-[10px] uppercase tracking-[0.14em] text-riviere-smoke/60 transition-colors hover:text-riviere-ink"
+          >
+            Guía de tallas →
+          </Link>
         </label>
 
-        <label className="block">
+        {/* Orden */}
+        <label className="block flex-[2]">
           <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
             Orden
           </span>
           <select
             value={filters.sort}
-            onChange={(event) =>
-              updateFilter("sort", event.target.value as SortValue)
-            }
-            className="mt-3 h-11 w-full border border-riviere-ink/12 bg-transparent px-3 text-sm outline-none transition focus:border-riviere-ink"
+            onChange={(e) => updateFilter("sort", e.target.value as SortValue)}
+            className={CONTROL_CLS}
           >
-            <option value="default">Editorial</option>
-            <option value="price-asc">Precio menor a mayor</option>
-            <option value="price-desc">Precio mayor a menor</option>
+            <option value="default">Recomendado</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
           </select>
         </label>
       </div>

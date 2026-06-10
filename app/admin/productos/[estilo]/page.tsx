@@ -48,6 +48,8 @@ export default async function EditProductPage({
     if (!product) return;
 
     const precio = Number(formData.get("precio"));
+    const dctoRaw = (formData.get("dcto") as string ?? "").trim();
+    const dcto = dctoRaw === "" ? null : Number(dctoRaw);
     const descripcion = ((formData.get("descripcion") as string) ?? "").trim();
     const caracteristicas = (
       (formData.get("caracteristicas") as string) ?? ""
@@ -55,6 +57,9 @@ export default async function EditProductPage({
     const material = ((formData.get("material") as string) ?? "").trim();
 
     if (isNaN(precio) || precio <= 0) {
+      redirect(`/admin/productos/${productEstilo}?error=1`);
+    }
+    if (dcto !== null && (isNaN(dcto) || dcto < 0 || dcto > 100)) {
       redirect(`/admin/productos/${productEstilo}?error=1`);
     }
 
@@ -66,6 +71,7 @@ export default async function EditProductPage({
 
     await saveProductOverride(productEstilo, {
       precio,
+      dcto,
       descripcion,
       caracteristicas,
       nombre,
@@ -183,6 +189,23 @@ export default async function EditProductPage({
                   defaultValue={product.precio}
                   required
                   className="border border-riviere-ink/15 bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-riviere-ink"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="dcto" className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">
+                  Descuento % (0–100, dejar vacío = sin descuento)
+                </label>
+                <input
+                  id="dcto"
+                  name="dcto"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="1"
+                  defaultValue={product.dcto ?? ""}
+                  placeholder="Ej: 20"
+                  className="border border-riviere-ink/15 bg-transparent px-3 py-2 text-sm outline-none transition-colors focus:border-riviere-ink placeholder:text-riviere-smoke/30"
                 />
               </div>
 

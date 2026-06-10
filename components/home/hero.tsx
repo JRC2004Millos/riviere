@@ -112,7 +112,7 @@ export function Hero() {
               size="lg"
               className="w-full sm:w-56 border-white/80 bg-transparent text-white hover:bg-white hover:text-[#111] md:border-[#111] md:bg-white/20 md:text-[#111] md:hover:bg-[#111] md:hover:text-white"
             >
-              <Link href="/#coleccion">Ver Colecciones</Link>
+              <Link href="/#coleccion">Ver Colección</Link>
             </Button>
 
             <Button

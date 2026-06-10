@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 const values = [
   {
     title: "Calidad",
-    copy: "Camisas Givenchy seleccionadas por calidad, tacto y presencia.",
+    copy: "Confección, materiales y atención al detalle como solo Givenchy sabe hacerlo.",
   },
   {
     title: "Diseño",
-    copy: "Seleccionadas por RIVIERE, enfocada en proporción, caída y detalle.",
+    copy: "Diseños concebidos para perdurar, no para seguir tendencias. Una estética atemporal seleccionada por su permanencia.",
   },
   {
     title: "Exclusividad",
-    copy: "Piezas disponibles bajo una experiencia de compra reducida y precisa.",
+    copy: "Una oportunidad irrepetible de adquirir piezas Givenchy de archivo. Piezas limitadas. Sin reposiciones.",
   },
 ];
 
@@ -26,10 +26,10 @@ export function BrandValues() {
       <div className="container">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.24em] text-riviere-bone/62">
-            Valores de marca
+            En Riviere comprendemos
           </p>
           <h2 className="mt-3 text-3xl font-medium uppercase tracking-[0.08em] md:text-5xl">
-            Presencia sin exceso
+            EL VALOR DE PERMANECER
           </h2>
         </div>
 

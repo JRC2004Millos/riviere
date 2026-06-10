@@ -26,11 +26,14 @@ export type EmailOrder = {
   reference: string;
   customerName: string;
   customerEmail: string;
+  customerCity?: string;
   total: number;
+  envio: number;
   items: EmailOrderItem[];
 };
 
-function itemsTable(items: EmailOrderItem[]): string {
+function itemsTable(order: EmailOrder): string {
+  const { items, envio, total } = order;
   const rows = items
     .map(
       (item) => `
@@ -51,6 +54,17 @@ function itemsTable(items: EmailOrderItem[]): string {
     )
     .join("");
 
+  const envioRow =
+    envio > 0
+      ? `<tr>
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:12px;color:#888">Envío</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px">${COP.format(envio)}</td>
+        </tr>`
+      : `<tr>
+          <td colspan="3" style="padding:10px 14px;text-align:right;font-size:12px;color:#888">Envío</td>
+          <td style="padding:10px 14px;text-align:right;font-size:13px;color:#888">Gratis</td>
+        </tr>`;
+
   return `
     <table style="width:100%;border-collapse:collapse">
       <thead>
@@ -63,9 +77,10 @@ function itemsTable(items: EmailOrderItem[]): string {
       </thead>
       <tbody>${rows}</tbody>
       <tfoot>
+        ${envioRow}
         <tr>
-          <td colspan="3" style="padding:12px 14px;text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#888">Total</td>
-          <td style="padding:12px 14px;text-align:right;font-size:15px;font-weight:600">${COP.format(items.reduce((s, i) => s + i.precio * i.cantidad, 0))}</td>
+          <td colspan="3" style="padding:12px 14px;text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#888;border-top:1px solid #f0f0f0">Total</td>
+          <td style="padding:12px 14px;text-align:right;font-size:15px;font-weight:600;border-top:1px solid #f0f0f0">${COP.format(total)}</td>
         </tr>
       </tfoot>
     </table>`;
@@ -86,6 +101,13 @@ function layout(content: string): string {
 </body></html>`;
 }
 
+// Cuando se usa onboarding@resend.dev solo puedes enviar al email de tu cuenta Resend.
+// Setea RESEND_TO_OVERRIDE con ese email para pruebas. En producción con dominio
+// verificado, quita esta variable y los correos van al email real del cliente.
+function resolveRecipient(customerEmail: string): string {
+  return process.env.RESEND_TO_OVERRIDE?.trim() || customerEmail;
+}
+
 export async function sendOrderConfirmedEmail(order: EmailOrder): Promise<void> {
   if (!process.env.RESEND_API_KEY) return;
 
@@ -100,12 +122,13 @@ export async function sendOrderConfirmedEmail(order: EmailOrder): Promise<void> 
       Hola ${order.customerName}, tu pago fue recibido exitosamente.
       Pronto nos pondremos en contacto contigo para coordinar la entrega.
     </p>
-    ${itemsTable(order.items)}
+    ${itemsTable(order)}
   `);
 
   await resend.emails.send({
     from: FROM,
-    to: order.customerEmail,
+    to: resolveRecipient(order.customerEmail),
+    replyTo: order.customerEmail,
     subject: `Pedido confirmado — Ref. ${order.reference}`,
     html,
   });
@@ -128,7 +151,7 @@ export async function sendOrderFailedEmail(order: EmailOrder): Promise<void> {
     <p style="margin:0 0 16px;font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#888">
       Productos en tu pedido
     </p>
-    ${itemsTable(order.items)}
+    ${itemsTable(order)}
     <div style="margin-top:36px;text-align:center">
       <a href="${APP_URL}/catalogo"
          style="display:inline-block;padding:14px 32px;background:#111;color:#fff;text-decoration:none;font-size:11px;letter-spacing:.2em;text-transform:uppercase">
@@ -139,7 +162,8 @@ export async function sendOrderFailedEmail(order: EmailOrder): Promise<void> {
 
   await resend.emails.send({
     from: FROM,
-    to: order.customerEmail,
+    to: resolveRecipient(order.customerEmail),
+    replyTo: order.customerEmail,
     subject: `Pago no completado — Ref. ${order.reference}`,
     html,
   });

@@ -62,13 +62,22 @@ export default async function AdminPage() {
           <p className="mb-4 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
             Accesos rápidos
           </p>
-          <Button
-            asChild
-            variant="outline"
-            className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
-          >
-            <Link href="/admin/productos">Gestionar productos →</Link>
-          </Button>
+          <div className="flex flex-wrap gap-3">
+            <Button
+              asChild
+              variant="outline"
+              className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
+            >
+              <Link href="/admin/productos">Gestionar productos →</Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
+            >
+              <Link href="/admin/orden">Orden del catálogo →</Link>
+            </Button>
+          </div>
         </div>
 
         <div className="mt-4 border border-riviere-ink/10 bg-white p-8">

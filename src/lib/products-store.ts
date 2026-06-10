@@ -10,6 +10,7 @@ export type ProductVariant = {
 
 export type ProductOverride = {
   precio?: number;
+  dcto?: number | null;
   descripcion?: string;
   caracteristicas?: string;
   nombre?: string;
@@ -23,6 +24,8 @@ export type MergedProduct = {
   caracteristicas: string;
   mangaCorta: boolean;
   precio: number;
+  dcto: number | null;
+  sortOrder: number;
   estado: string;
   hasImage: boolean;
   descripcion?: string;
@@ -42,6 +45,8 @@ type DBProduct = {
   caracteristicas: string;
   mangaCorta: boolean;
   precio: number;
+  dcto: number | null;
+  sortOrder: number;
   estado: string;
   hasImage: boolean;
   descripcion: string | null;
@@ -76,6 +81,8 @@ function toMerged(p: DBProduct): MergedProduct {
     caracteristicas: p.caracteristicas,
     mangaCorta: p.mangaCorta,
     precio: p.precio,
+    dcto: p.dcto,
+    sortOrder: p.sortOrder,
     estado: p.estado,
     hasImage: p.hasImage,
     descripcion: p.descripcion ?? undefined,
@@ -90,10 +97,18 @@ function toMerged(p: DBProduct): MergedProduct {
 
 export async function getAllProducts(): Promise<MergedProduct[]> {
   const rows = await prisma.product.findMany({
-    orderBy: { estilo: "asc" },
+    orderBy: [{ sortOrder: "asc" }, { estilo: "asc" }],
     include: { variantes: true },
   });
   return rows.map(toMerged);
+}
+
+export async function saveSortOrder(ids: string[]): Promise<void> {
+  await prisma.$transaction(
+    ids.map((id, index) =>
+      prisma.product.update({ where: { id }, data: { sortOrder: index } }),
+    ),
+  );
 }
 
 export async function getProductByEstilo(
@@ -124,6 +139,7 @@ export async function saveProductOverride(
       ...(override.material !== undefined && {
         material: override.material || null,
       }),
+      ...(override.dcto !== undefined && { dcto: override.dcto }),
     },
   });
 }

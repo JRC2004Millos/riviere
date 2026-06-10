@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, ShoppingCart, User, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/src/context/cart-context";
@@ -10,7 +10,7 @@ import { useCart } from "@/src/context/cart-context";
 const navItems = [
   { label: "Inicio", href: "/" },
   { label: "Catálogo", href: "/catalogo" },
-  { label: "Colecciones", href: "/#coleccion" },
+  { label: "Colección", href: "/#coleccion" },
   { label: "Contacto", href: "/#contacto" },
 ];
 
@@ -60,11 +60,8 @@ export function Navbar() {
           <Link href="/catalogo" aria-label="Buscar">
             <Search className="h-4 w-4" />
           </Link>
-          <Link href="/login" aria-label="Login">
-            <User className="h-4 w-4" />
-          </Link>
           <Link href="/carrito" aria-label="Carrito" className="relative">
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4" />
             {totalItems > 0 && (
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-riviere-ink text-[9px] leading-none text-white">
                 {totalItems > 9 ? "9+" : totalItems}

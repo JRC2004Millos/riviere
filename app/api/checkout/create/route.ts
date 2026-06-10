@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { generateIntegrityHash } from "@/src/lib/wompi";
 
+const COSTO_ENVIO = 15_000;
+
+function precioConDcto(precio: number, dcto: number | null): number {
+  if (!dcto) return precio;
+  return Math.round(precio * (1 - dcto / 100));
+}
+
 type CheckoutItem = {
   productId: string;
   talla: string;
@@ -13,7 +20,9 @@ type CheckoutCustomer = {
   nombre: string;
   email: string;
   telefono?: string;
-  direccion?: string;
+  ciudad: string;
+  departamentoId?: string;
+  direccion: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -25,7 +34,13 @@ export async function POST(req: NextRequest) {
 
     const { items, customer } = body;
 
-    if (!items?.length || !customer?.nombre?.trim() || !customer?.email?.trim()) {
+    if (
+      !items?.length ||
+      !customer?.nombre?.trim() ||
+      !customer?.email?.trim() ||
+      !customer?.ciudad?.trim() ||
+      !customer?.direccion?.trim()
+    ) {
       return NextResponse.json({ error: "Datos incompletos" }, { status: 400 });
     }
 
@@ -33,9 +48,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email inválido" }, { status: 400 });
     }
 
+    // Validación básica de dirección colombiana
+    const ADDR_RE =
+      /^(calle|carrera|cra\.?|cll\.?|avenida|av\.?|transversal|tv\.?|diagonal|dg\.?|autopista|ak\.?)\s+\d/i;
+    if (!ADDR_RE.test(customer.direccion.trim())) {
+      return NextResponse.json(
+        { error: "Formato de dirección inválido" },
+        { status: 400 },
+      );
+    }
+
     for (const item of items) {
       if (!item.productId || !item.talla || item.cantidad < 1) {
-        return NextResponse.json({ error: "Item inválido en el pedido" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Item inválido en el pedido" },
+          { status: 400 },
+        );
       }
     }
 
@@ -47,7 +75,7 @@ export async function POST(req: NextRequest) {
     });
     const productMap = new Map(products.map((p) => [p.id, p]));
 
-    let total = 0;
+    let subtotal = 0;
     const orderItems: {
       productId: string;
       estilo: string;
@@ -61,41 +89,53 @@ export async function POST(req: NextRequest) {
     for (const item of items) {
       const product = productMap.get(item.productId);
       if (!product) {
-        return NextResponse.json({ error: "Producto no encontrado" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Producto no encontrado" },
+          { status: 400 },
+        );
       }
 
       const color = item.color ?? "";
 
-      // Busca la variante exacta (talla + color)
       const variante = product.variantes.find(
         (v) => v.talla === item.talla && v.color === color,
       );
 
       if (!variante) {
         return NextResponse.json(
-          { error: `Talla ${item.talla} no disponible para ${product.nombre || product.estilo}` },
+          {
+            error: `Talla ${item.talla} no disponible para ${product.nombre || product.estilo}`,
+          },
           { status: 400 },
         );
       }
 
       if (variante.cantidad < item.cantidad) {
         return NextResponse.json(
-          { error: `Stock insuficiente para ${product.nombre || product.estilo} — talla ${item.talla}` },
+          {
+            error: `Stock insuficiente para ${product.nombre || product.estilo} — talla ${item.talla}`,
+          },
           { status: 400 },
         );
       }
 
-      total += product.precio * item.cantidad;
+      const precioFinal = precioConDcto(product.precio, product.dcto);
+      subtotal += precioFinal * item.cantidad;
       orderItems.push({
         productId: product.id,
         estilo: product.estilo,
         nombre: product.nombre || product.estilo,
         talla: item.talla,
         color,
-        precio: product.precio,
+        precio: precioFinal,
         cantidad: item.cantidad,
       });
     }
+
+    // Costo de envío: gratis en Bogotá, $15.000 en el resto del país
+    const ciudad = customer.ciudad.trim();
+    const envio = ciudad.toLowerCase().includes("bogot") ? 0 : COSTO_ENVIO;
+    const total = subtotal + envio;
 
     const reference = `RIVIERE-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
@@ -103,10 +143,13 @@ export async function POST(req: NextRequest) {
       data: {
         reference,
         total,
+        envio,
         customerName: customer.nombre.trim(),
         customerEmail: customer.email.trim().toLowerCase(),
         customerPhone: customer.telefono?.trim() ?? "",
-        customerAddress: customer.direccion?.trim() ?? "",
+        customerCity: ciudad,
+        customerDepartment: customer.departamentoId ?? "",
+        customerAddress: customer.direccion.trim(),
         items: { create: orderItems },
       },
     });
@@ -130,9 +173,14 @@ export async function POST(req: NextRequest) {
       "signature:integrity": integrityHash,
     });
 
-    return NextResponse.json({ wompiUrl: `https://checkout.wompi.co/p/?${wompiParams}` });
+    return NextResponse.json({
+      wompiUrl: `https://checkout.wompi.co/p/?${wompiParams}`,
+    });
   } catch (err) {
     console.error("[checkout/create]", err);
-    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 },
+    );
   }
 }

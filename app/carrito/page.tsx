@@ -19,6 +19,13 @@ export default function CarritoPage() {
     return (
       <main className="min-h-screen bg-white pt-20 text-[#111]">
         <div className="container flex flex-col items-center justify-center py-40">
+          <Image
+            src="/images/Rivie sorprendido.png"
+            alt="Carrito vacío"
+            width={150}
+            height={150}
+            className="mb-10"
+          />
           <p className="text-xs uppercase tracking-[0.3em] text-riviere-smoke">
             Tu carrito
           </p>
@@ -105,9 +112,7 @@ export default function CarritoPage() {
                       {item.cantidad}
                     </span>
                     <button
-                      onClick={() =>
-                        updateQty(item.cartKey, item.cantidad + 1)
-                      }
+                      onClick={() => updateQty(item.cartKey, item.cantidad + 1)}
                       disabled={item.cantidad >= item.stockMax}
                       className="flex h-7 w-7 items-center justify-center border border-riviere-ink/15 transition-colors hover:border-riviere-ink disabled:cursor-not-allowed disabled:opacity-30"
                       aria-label="Aumentar cantidad"

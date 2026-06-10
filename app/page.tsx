@@ -7,8 +7,8 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <AboutRiviere />
       <FeaturedCollection />
+      <AboutRiviere />
       <BrandValues />
     </main>
   );

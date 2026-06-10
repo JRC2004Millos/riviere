@@ -8,31 +8,34 @@ const products = [
   {
     name: "Oxford",
     slug: "Oxford",
-    description: "Camisa estructurada en algodón compacto.",
+    description:
+      "Un esencial contemporáneo diseñado para acompañar el día a día con elegancia natural.",
     image: "/images/OXFORD.png",
   },
   {
     name: "Formal",
     slug: "Traje",
-    description: "Textura ligera para una silueta relajada.",
+    description: "La expresión más depurada de la sastrería moderna.",
     image: "/images/formal.png",
   },
   {
     name: "Cuadros",
     slug: "Cuadros",
-    description: "Blanco preciso con cuello de presencia limpia.",
+    description: "Un clásico masculino que combina tradición y carácter.",
     image: "/images/cuadros.png",
   },
   {
     name: "Rayas",
     slug: "Rayas",
-    description: "Rayas verticales para una presencia alargada.",
+    description:
+      "Proporciones precisas que aportan profundidad visual y distinción.",
     image: "/images/rayas.png",
   },
   {
     name: "Diseños",
     slug: "Diseños",
-    description: "Piezas con detalles de diseño para presencia editorial.",
+    description:
+      "Texturas y patrones sutiles que distinguen cada pieza con personalidad propia.",
     image: "/images/disenos.png",
   },
 ];
@@ -47,12 +50,12 @@ export function FeaturedCollection() {
               Colección destacada
             </p>
             <h2 className="mt-3 text-3xl font-medium uppercase tracking-[0.08em] md:text-5xl">
-              Esenciales con carácter
+              COLECCIÓN - ARCHIVO GIVENCHY
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-riviere-smoke">
-            Una seleccion de camisas Givenchy seleccionadas por RIVIERE para
-            construir una presencia masculina sobria, editorial y atemporal.
+            Una curaduría de camisas Givenchy que privilegia la sobriedad, la
+            calidad y la permanencia por encima de las tendencias.
           </p>
         </div>
 
