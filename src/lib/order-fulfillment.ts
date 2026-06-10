@@ -66,9 +66,12 @@ export async function fulfillOrder(
         customerName: order.customerName,
         customerEmail: order.customerEmail,
         customerCity: order.customerCity,
+        customerDepartment: order.customerDepartment,
+        customerAddress: order.customerAddress,
         total: order.total,
         envio: order.envio,
         items: order.items,
+        createdAt: order.createdAt,
       });
       console.log(`[fulfillOrder] confirmation email sent to ${order.customerEmail}`);
     } catch (err) {
@@ -81,6 +84,8 @@ export async function fulfillOrder(
         customerName: order.customerName,
         customerEmail: order.customerEmail,
         customerCity: order.customerCity,
+        customerDepartment: order.customerDepartment,
+        customerAddress: order.customerAddress,
         total: order.total,
         envio: order.envio,
         items: order.items,

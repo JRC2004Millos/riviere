@@ -9,7 +9,9 @@ export default function GarantiaPage() {
     <main className="min-h-screen bg-white pt-20 text-[#111]">
       <div className="container py-12">
         <nav className="mb-12 text-xs uppercase tracking-[0.2em] text-riviere-smoke">
-          <Link href="/" className="transition-colors hover:text-riviere-ink">Inicio</Link>
+          <Link href="/" className="transition-colors hover:text-riviere-ink">
+            Inicio
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-riviere-ink">Garantía</span>
         </nav>
@@ -26,7 +28,9 @@ export default function GarantiaPage() {
             </p>
             <p className="text-sm leading-[1.9] text-riviere-smoke">
               En RIVIERE ofrecemos garantía de{" "}
-              <strong className="font-medium text-riviere-ink">1 mes (30 días calendario)</strong>{" "}
+              <strong className="font-medium text-riviere-ink">
+                1 mes (30 días calendario)
+              </strong>{" "}
               contado a partir de la fecha de entrega del producto.
             </p>
           </section>
@@ -49,14 +53,39 @@ export default function GarantiaPage() {
             </p>
           </section>
 
+          {/* Solución de la garantía */}
+          <section className="border-t border-riviere-ink/10 pt-8">
+            <p className="mb-5 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
+              Solución de la garantía
+            </p>
+
+            <div className="space-y-4 text-sm leading-[1.9] text-riviere-smoke">
+              <p>
+                Si, luego de la evaluación correspondiente, se determina la
+                existencia de un defecto cubierto por la presente garantía,
+                RIVIERE podrá, según la naturaleza del caso, reparar el
+                producto, sustituirlo por uno igual o de características
+                equivalentes, o efectuar la devolución del dinero cuando las
+                alternativas anteriores no resulten procedentes.
+              </p>
+
+              <p>
+                La solución aplicable será determinada teniendo en cuenta las
+                condiciones particulares del producto, la disponibilidad de
+                inventario y la normativa vigente.
+              </p>
+            </div>
+          </section>
+
           {/* Exclusiones */}
           <section className="border-t border-riviere-ink/10 pt-8">
             <p className="mb-5 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
               Exclusiones
             </p>
             <p className="mb-5 text-sm text-riviere-smoke">
-              La garantía <strong className="font-medium text-riviere-ink">no cubre</strong> los
-              siguientes casos:
+              La garantía{" "}
+              <strong className="font-medium text-riviere-ink">no cubre</strong>{" "}
+              los siguientes casos:
             </p>
             <ul className="space-y-4">
               {[
@@ -65,12 +94,40 @@ export default function GarantiaPage() {
                 "Daños ocasionados por no atender las instrucciones de cuidado o mantenimiento de la prenda.",
                 "Prendas sucias o con daños que no sean atribuibles a defectos de fábrica.",
               ].map((item, i) => (
-                <li key={i} className="flex gap-4 text-sm leading-[1.8] text-riviere-smoke">
+                <li
+                  key={i}
+                  className="flex gap-4 text-sm leading-[1.8] text-riviere-smoke"
+                >
                   <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-riviere-smoke/50" />
                   {item}
                 </li>
               ))}
             </ul>
+          </section>
+
+          {/* Consideraciones */}
+          <section className="border-t border-riviere-ink/10 pt-8">
+            <p className="mb-5 text-xs uppercase tracking-[0.22em] text-riviere-smoke">
+              Consideraciones
+            </p>
+
+            <div className="space-y-4 text-sm leading-[1.9] text-riviere-smoke">
+              <p>
+                Las diferencias normales de textura, tonalidad o apariencia
+                propias de los materiales utilizados, así como las variaciones
+                que puedan apreciarse entre fotografías y el producto recibido
+                debido a la configuración de pantallas o dispositivos, no
+                constituyen defectos de fabricación.
+              </p>
+
+              <p>
+                Los cambios solicitados por razones de talla, gusto personal,
+                preferencias estéticas o cualquier circunstancia distinta a un
+                defecto de fabricación no constituyen una reclamación de
+                garantía y estarán sujetos a las políticas comerciales
+                aplicables.
+              </p>
+            </div>
           </section>
 
           {/* Proceso */}
@@ -80,8 +137,8 @@ export default function GarantiaPage() {
             </p>
             <div className="space-y-3 text-sm leading-[1.9] text-riviere-smoke">
               <p>
-                Para iniciar el proceso de garantía, comunícate con nosotros
-                por WhatsApp o al correo{" "}
+                Para iniciar el proceso de garantía, comunícate con nosotros por
+                WhatsApp o al correo{" "}
                 <a
                   href="mailto:riviere.co14@gmail.com"
                   className="text-riviere-ink underline underline-offset-4"
@@ -103,7 +160,9 @@ export default function GarantiaPage() {
                 ))}
               </ul>
               <p className="pt-2">
-                Una vez revisada la solicitud, te indicaremos los pasos a seguir.
+                Una vez recibida la información requerida, RIVIERE realizará la
+                evaluación correspondiente e informará al cliente el resultado
+                de la solicitud y los pasos a seguir.
               </p>
             </div>
           </section>

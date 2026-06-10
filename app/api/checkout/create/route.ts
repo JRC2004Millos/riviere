@@ -23,6 +23,7 @@ type CheckoutCustomer = {
   ciudad: string;
   departamentoId?: string;
   direccion: string;
+  detallesDir?: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -149,7 +150,9 @@ export async function POST(req: NextRequest) {
         customerPhone: customer.telefono?.trim() ?? "",
         customerCity: ciudad,
         customerDepartment: customer.departamentoId ?? "",
-        customerAddress: customer.direccion.trim(),
+        customerAddress: customer.detallesDir?.trim()
+            ? `${customer.direccion.trim()}, ${customer.detallesDir.trim()}`
+            : customer.direccion.trim(),
         items: { create: orderItems },
       },
     });

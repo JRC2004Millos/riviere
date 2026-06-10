@@ -75,6 +75,13 @@ export default async function AdminPage() {
               variant="outline"
               className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
             >
+              <Link href="/admin/pedidos">Ver pedidos →</Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="border-riviere-ink/30 text-riviere-ink hover:bg-riviere-ink hover:text-white"
+            >
               <Link href="/admin/orden">Orden del catálogo →</Link>
             </Button>
           </div>
