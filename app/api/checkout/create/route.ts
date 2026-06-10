@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { generateIntegrityHash } from "@/src/lib/wompi";
+import path from "path";
+import fs from "fs";
 
 const COSTO_ENVIO = 15_000;
+
+function getDepartamentoNombre(id: string): string {
+  try {
+    const file = path.join(process.cwd(), "data", "colombia.min.txt");
+    const data = JSON.parse(fs.readFileSync(file, "utf-8")) as Array<{ id: number; departamento: string }>;
+    const found = data.find((d) => String(d.id) === id);
+    return found?.departamento ?? id;
+  } catch {
+    return id;
+  }
+}
 
 function precioConDcto(precio: number, dcto: number | null): number {
   if (!dcto) return precio;
@@ -149,7 +162,9 @@ export async function POST(req: NextRequest) {
         customerEmail: customer.email.trim().toLowerCase(),
         customerPhone: customer.telefono?.trim() ?? "",
         customerCity: ciudad,
-        customerDepartment: customer.departamentoId ?? "",
+        customerDepartment: customer.departamentoId
+          ? getDepartamentoNombre(customer.departamentoId)
+          : "",
         customerAddress: customer.detallesDir?.trim()
             ? `${customer.direccion.trim()}, ${customer.detallesDir.trim()}`
             : customer.direccion.trim(),

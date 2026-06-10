@@ -63,11 +63,10 @@ export default async function EditProductPage({
       redirect(`/admin/productos/${productEstilo}?error=1`);
     }
 
-    const nombre = generateProductName(
-      caracteristicas,
-      productColores,
-      productMangaCorta,
-    );
+    const coloresHidden = (formData.get("_colores") as string ?? "");
+    const colores = coloresHidden ? coloresHidden.split(",").filter(Boolean) : [];
+    const mangaCorta = formData.get("_manga_corta") === "1";
+    const nombre = generateProductName(caracteristicas, colores, mangaCorta);
 
     await saveProductOverride(productEstilo, {
       precio,
@@ -169,6 +168,8 @@ export default async function EditProductPage({
         )}
 
         <form action={handleSave} className="space-y-6">
+          <input type="hidden" name="_colores" value={productColores.join(",")} />
+          <input type="hidden" name="_manga_corta" value={productMangaCorta ? "1" : "0"} />
           {/* Info general */}
           <div className="border border-riviere-ink/10 bg-white p-6">
             <p className="mb-6 text-xs uppercase tracking-[0.24em] text-riviere-smoke">
