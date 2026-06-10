@@ -7,6 +7,8 @@ interface Props {
   id: string;
   estilo: string;
   precio: number;
+  precioOriginal: number;
+  dcto: number | null;
   imagen: string;
   tallas: string[];
   stockMax: number;
@@ -16,6 +18,8 @@ export function AddToCartButton({
   id,
   estilo,
   precio,
+  precioOriginal,
+  dcto,
   imagen,
   tallas,
   stockMax,
@@ -34,6 +38,8 @@ export function AddToCartButton({
       estilo,
       talla: tallaSeleccionada,
       precio,
+      precioOriginal,
+      dcto,
       imagen,
       stockMax,
     });
