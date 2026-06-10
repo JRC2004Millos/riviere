@@ -55,6 +55,7 @@ export function ProductInteractive({
     tieneColores ? "" : colorAuto,
   );
   const [imagenActual, setImagenActual] = useState(imagenDefault);
+  const [imagenCargando, setImagenCargando] = useState(false);
   const [tallaSeleccionada, setTallaSeleccionada] = useState<string>("");
   const [cantidad, setCantidad] = useState(1);
   const [added, setAdded] = useState(false);
@@ -87,7 +88,7 @@ export function ProductInteractive({
     setColorSeleccionado(color);
     setAdded(false);
     setCantidad(1);
-    // Intenta imagen por color; onError revierte al default
+    setImagenCargando(true);
     setImagenActual(`/images/${estilo}-${color}.png`);
   }
 
@@ -137,15 +138,21 @@ export function ProductInteractive({
       <div className="flex flex-col gap-3">
         <div className="relative aspect-[4/5] overflow-hidden bg-riviere-stone">
           <Image
-            key={imagenActual}
             src={imagenActual}
             alt={`Camisa RIVIERE estilo ${estilo}`}
             fill
             priority
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-            onError={() => setImagenActual(imagenDefault)}
+            className={`object-cover transition-opacity duration-300 ${imagenCargando ? "opacity-50" : "opacity-100"}`}
+            onLoad={() => setImagenCargando(false)}
+            onError={() => {
+              setImagenActual(imagenDefault);
+              setImagenCargando(false);
+            }}
           />
+          {imagenCargando && (
+            <div className="absolute inset-0 animate-pulse bg-riviere-stone/50" />
+          )}
         </div>
       </div>
 

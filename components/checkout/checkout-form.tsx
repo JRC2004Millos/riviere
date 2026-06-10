@@ -22,6 +22,7 @@ type Fields = {
   departamentoId: string;
   ciudad: string;
   direccion: string;
+  detallesDireccion: string;
 };
 
 // Valida que la dirección siga el formato colombiano: Calle/Carrera/etc + número
@@ -53,6 +54,7 @@ export function CheckoutForm() {
     departamentoId: "",
     ciudad: "",
     direccion: "",
+    detallesDireccion: "",
   });
 
   const [departamentos, setDepartamentos] = useState<Dep[]>([]);
@@ -141,6 +143,7 @@ export function CheckoutForm() {
             ciudad: fields.ciudad,
             departamentoId: fields.departamentoId,
             direccion: fields.direccion,
+            detallesDir: fields.detallesDireccion,
           },
         }),
       });
@@ -352,6 +355,22 @@ export function CheckoutForm() {
                 Formato: Calle, Carrera, Avenida, etc. + número
               </p>
             )}
+          </label>
+
+          {/* Detalles de dirección */}
+          <label className="block">
+            <span className={LABEL_CLS}>Detalle de dirección</span>
+            <input
+              name="detallesDireccion"
+              autoComplete="address-line2"
+              placeholder="Casa 5, Torre 2 Apto 401, Oficina 203..."
+              value={fields.detallesDireccion}
+              onChange={handleChange}
+              className={INPUT_CLS}
+            />
+            <p className="mt-2 text-[11px] tracking-[0.1em] text-riviere-smoke/60">
+              Opcional — apto, torre, casa, barrio, indicaciones adicionales
+            </p>
           </label>
         </div>
 

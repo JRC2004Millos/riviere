@@ -27,10 +27,29 @@ export type EmailOrder = {
   customerName: string;
   customerEmail: string;
   customerCity?: string;
+  customerDepartment?: string;
+  customerAddress?: string;
   total: number;
   envio: number;
   items: EmailOrderItem[];
 };
+
+function addressBlock(order: EmailOrder): string {
+  const { customerAddress, customerCity, customerDepartment } = order;
+  if (!customerAddress && !customerCity) return "";
+  const lines = [
+    customerAddress,
+    [customerCity, customerDepartment].filter(Boolean).join(", "),
+  ]
+    .filter(Boolean)
+    .map((l) => `<p style="margin:3px 0 0;font-size:14px;color:#333">${l}</p>`)
+    .join("");
+  return `
+    <div style="margin:0 0 28px;padding:14px 16px;background:#f7f7f7;border-left:3px solid #ddd">
+      <p style="margin:0 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:#999">Dirección de entrega</p>
+      ${lines}
+    </div>`;
+}
 
 function itemsTable(order: EmailOrder): string {
   const { items, envio, total } = order;
@@ -38,8 +57,9 @@ function itemsTable(order: EmailOrder): string {
     .map(
       (item) => `
     <tr>
-      <td style="padding:10px 14px;border-bottom:1px solid #f0f0f0;font-size:14px">
-        ${item.nombre || item.estilo}
+      <td style="padding:10px 14px;border-bottom:1px solid #f0f0f0">
+        <span style="display:block;font-size:14px">${item.nombre || item.estilo}</span>
+        <span style="display:block;font-size:11px;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-top:2px">${item.estilo}</span>
       </td>
       <td style="padding:10px 14px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#555">
         ${item.talla}${item.color ? ` · ${item.color}` : ""}
@@ -101,12 +121,13 @@ function layout(content: string): string {
 </body></html>`;
 }
 
-// Cuando se usa onboarding@resend.dev solo puedes enviar al email de tu cuenta Resend.
-// Setea RESEND_TO_OVERRIDE con ese email para pruebas. En producción con dominio
-// verificado, quita esta variable y los correos van al email real del cliente.
+// En pruebas con onboarding@resend.dev setea RESEND_TO_OVERRIDE para redirigir correos.
+// Con dominio verificado en producción, déjala vacía.
 function resolveRecipient(customerEmail: string): string {
   return process.env.RESEND_TO_OVERRIDE?.trim() || customerEmail;
 }
+
+const ADMIN_EMAIL = process.env.RESEND_ADMIN_EMAIL?.trim() ?? "";
 
 export async function sendOrderConfirmedEmail(order: EmailOrder): Promise<void> {
   if (!process.env.RESEND_API_KEY) return;
@@ -122,6 +143,7 @@ export async function sendOrderConfirmedEmail(order: EmailOrder): Promise<void> 
       Hola ${order.customerName}, tu pago fue recibido exitosamente.
       Pronto nos pondremos en contacto contigo para coordinar la entrega.
     </p>
+    ${addressBlock(order)}
     ${itemsTable(order)}
   `);
 
@@ -132,6 +154,15 @@ export async function sendOrderConfirmedEmail(order: EmailOrder): Promise<void> 
     subject: `Pedido confirmado — Ref. ${order.reference}`,
     html,
   });
+
+  if (ADMIN_EMAIL) {
+    await resend.emails.send({
+      from: FROM,
+      to: ADMIN_EMAIL,
+      subject: `[Nuevo pedido] ${order.customerName} — Ref. ${order.reference}`,
+      html,
+    });
+  }
 }
 
 export async function sendOrderFailedEmail(order: EmailOrder): Promise<void> {
@@ -148,9 +179,7 @@ export async function sendOrderFailedEmail(order: EmailOrder): Promise<void> {
       Hola ${order.customerName}, tu pago no pudo ser procesado.
       Puedes intentarlo de nuevo cuando quieras.
     </p>
-    <p style="margin:0 0 16px;font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:#888">
-      Productos en tu pedido
-    </p>
+    ${addressBlock(order)}
     ${itemsTable(order)}
     <div style="margin-top:36px;text-align:center">
       <a href="${APP_URL}/catalogo"

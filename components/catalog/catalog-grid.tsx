@@ -88,6 +88,7 @@ export function CatalogGrid({ products }: CatalogGridProps) {
   const [filters, setFilters] = useState<CatalogFilterState>(() => ({
     ...initialFilters,
     estiloCategoria: searchParams.get("estilo") ?? "all",
+    search: searchParams.get("q") ?? "",
   }));
   const [visibleCount, setVisibleCount] = useState(productsPerPage);
 
@@ -203,7 +204,7 @@ export function CatalogGrid({ products }: CatalogGridProps) {
         ) : (
           <div className="mt-14 border-y border-riviere-ink/10 py-16 text-center">
             <p className="text-sm uppercase tracking-[0.18em] text-riviere-smoke">
-              Sin resultados para esta seleccion
+              Sin resultados para esta selección
             </p>
           </div>
         )}
