@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { trackFbEvent } from "@/components/analytics/facebook-pixel";
 
 type OrderStatus = "PENDING_PAYMENT" | "PAID" | "FAILED" | "CANCELLED";
 
@@ -25,6 +26,7 @@ export function ResultadoContent() {
 
   const [order, setOrder] = useState<OrderResponse | null>(null);
   const [error, setError] = useState<"not_found" | "no_id" | null>(null);
+  const purchaseTracked = useRef(false);
 
   useEffect(() => {
     if (!wompiId && !fallbackRef) {
@@ -72,6 +74,16 @@ export function ResultadoContent() {
       clearTimeout(timer);
     };
   }, [wompiId, fallbackRef]);
+
+  useEffect(() => {
+    if (order?.status === "PAID" && !purchaseTracked.current) {
+      purchaseTracked.current = true;
+      trackFbEvent("Purchase", {
+        value: order.total / 100,
+        currency: "COP",
+      });
+    }
+  }, [order]);
 
   // ── Sin datos de Wompi ──────────────────────────────────────────────────────
   if (error === "no_id") {

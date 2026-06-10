@@ -91,9 +91,21 @@ export default function CarritoPage() {
                     <p className="mt-1 text-xs uppercase tracking-[0.14em] text-riviere-smoke">
                       Talla {item.talla}
                     </p>
-                    <p className="mt-1.5 text-sm text-riviere-smoke">
-                      {fmt.format(item.precio)}
-                    </p>
+                    <div className="mt-1.5 flex items-center gap-2">
+                      <p className="text-sm text-riviere-smoke">
+                        {fmt.format(item.precio)}
+                      </p>
+                      {item.dcto ? (
+                        <>
+                          <p className="text-xs text-riviere-smoke/50 line-through tabular-nums">
+                            {fmt.format(item.precioOriginal)}
+                          </p>
+                          <span className="text-[10px] uppercase tracking-[0.1em] text-emerald-700">
+                            -{item.dcto}%
+                          </span>
+                        </>
+                      ) : null}
+                    </div>
                   </div>
 
                   <div className="mt-3 flex items-center gap-3">
@@ -135,9 +147,16 @@ export default function CarritoPage() {
                   >
                     <X className="h-4 w-4" />
                   </button>
-                  <p className="text-sm font-light tabular-nums">
-                    {fmt.format(item.precio * item.cantidad)}
-                  </p>
+                  <div className="flex flex-col items-end gap-0.5">
+                    <p className="text-sm font-light tabular-nums">
+                      {fmt.format(item.precio * item.cantidad)}
+                    </p>
+                    {item.dcto ? (
+                      <p className="text-xs text-riviere-smoke/40 line-through tabular-nums">
+                        {fmt.format(item.precioOriginal * item.cantidad)}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             ))}
@@ -150,18 +169,32 @@ export default function CarritoPage() {
                 Resumen del pedido
               </p>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-riviere-smoke">
-                    {totalItems} {totalItems === 1 ? "producto" : "productos"}
-                  </span>
-                  <span className="tabular-nums">{fmt.format(subtotal)}</span>
-                </div>
-                <div className="flex items-center justify-between text-riviere-smoke/60">
-                  <span>Envío</span>
-                  <span>A calcular</span>
-                </div>
-              </div>
+              {(() => {
+                const ahorro = items.reduce(
+                  (s, i) => s + (i.precioOriginal - i.precio) * i.cantidad,
+                  0,
+                );
+                return (
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-riviere-smoke">
+                        {totalItems} {totalItems === 1 ? "producto" : "productos"}
+                      </span>
+                      <span className="tabular-nums">{fmt.format(subtotal)}</span>
+                    </div>
+                    {ahorro > 0 && (
+                      <div className="flex items-center justify-between text-emerald-700">
+                        <span>Ahorro</span>
+                        <span className="tabular-nums">-{fmt.format(ahorro)}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-riviere-smoke/60">
+                      <span>Envío</span>
+                      <span>A calcular</span>
+                    </div>
+                  </div>
+                );
+              })()}
 
               <div className="mt-5 flex items-center justify-between border-t border-riviere-ink/10 pt-5">
                 <span className="text-xs uppercase tracking-[0.18em] text-riviere-smoke">

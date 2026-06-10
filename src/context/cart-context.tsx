@@ -13,7 +13,9 @@ export type CartItem = {
   estilo: string;
   talla: string;
   color?: string;
-  precio: number;
+  precio: number;       // precio final (con descuento aplicado)
+  precioOriginal: number; // precio sin descuento
+  dcto: number | null;  // porcentaje de descuento, ej. 20
   imagen: string;
   stockMax: number; // snapshot de cantidad disponible al agregar
   cantidad: number; // cantidad en el carrito

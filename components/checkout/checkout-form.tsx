@@ -194,14 +194,33 @@ export function CheckoutForm() {
                     : `${item.cantidad} unidades`}
                 </p>
               </div>
-              <p className="text-sm tabular-nums">
-                {COP.format(item.precio * item.cantidad)}
-              </p>
+              <div className="flex flex-col items-end gap-0.5">
+                <p className="text-sm tabular-nums">
+                  {COP.format(item.precio * item.cantidad)}
+                </p>
+                {item.dcto ? (
+                  <p className="text-xs text-riviere-smoke/40 line-through tabular-nums">
+                    {COP.format(item.precioOriginal * item.cantidad)}
+                  </p>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>
 
         <div className="mt-6 space-y-3">
+          {(() => {
+            const ahorro = items.reduce(
+              (s, i) => s + (i.precioOriginal - i.precio) * i.cantidad,
+              0,
+            );
+            return ahorro > 0 ? (
+              <div className="flex items-center justify-between text-emerald-700">
+                <p className="text-xs uppercase tracking-[0.2em]">Ahorro</p>
+                <p className="text-sm tabular-nums">-{COP.format(ahorro)}</p>
+              </div>
+            ) : null;
+          })()}
           <div className="flex items-center justify-between">
             <p className="text-xs uppercase tracking-[0.2em] text-riviere-smoke">
               Subtotal
