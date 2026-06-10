@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   CatalogFilters,
@@ -22,6 +22,7 @@ const initialFilters: CatalogFilterState = {
   talla: "all",
   mangaCorta: "all",
   sort: "default",
+  oferta: false,
 };
 
 const tallaOrder = ["S", "S-M", "M", "M-L", "L", "L-XL", "XL", "XL-XXL", "XXL"];
@@ -62,12 +63,16 @@ function getFilteredProducts(
       filters.mangaCorta === "all" ||
       String(product.mangaCorta) === filters.mangaCorta;
 
+    const matchesOferta =
+      !filters.oferta || (product.dcto !== null && product.dcto > 0);
+
     return (
       matchesSearch &&
       matchesColor &&
       matchesEstilo &&
       matchesTalla &&
-      matchesManga
+      matchesManga &&
+      matchesOferta
     );
   });
 }
@@ -85,17 +90,29 @@ function sortTallas(left: string, right: string) {
 
 export function CatalogGrid({ products }: CatalogGridProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [filters, setFilters] = useState<CatalogFilterState>(() => ({
     ...initialFilters,
     estiloCategoria: searchParams.get("estilo") ?? "all",
     search: searchParams.get("q") ?? "",
+    oferta: searchParams.get("oferta") === "true",
   }));
   const [visibleCount, setVisibleCount] = useState(productsPerPage);
+
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, oferta: searchParams.get("oferta") === "true" }));
+    setVisibleCount(productsPerPage);
+  }, [searchParams]);
 
   const handleFilterChange = (nextFilters: CatalogFilterState) => {
     setFilters(nextFilters);
     setVisibleCount(productsPerPage);
   };
+
+  function clearOferta() {
+    handleFilterChange({ ...filters, oferta: false });
+    router.replace("/catalogo", { scroll: false });
+  }
 
   const colors = useMemo(
     () =>
@@ -173,6 +190,22 @@ export function CatalogGrid({ products }: CatalogGridProps) {
           mangas={mangas}
           onChange={handleFilterChange}
         />
+
+        {filters.oferta && (
+          <div className="mt-6 flex items-center gap-3">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-riviere-smoke">
+              Mostrando:
+            </span>
+            <button
+              type="button"
+              onClick={clearOferta}
+              className="flex items-center gap-2 border border-riviere-ink/30 px-3 py-1 text-[11px] uppercase tracking-[0.14em] text-riviere-ink transition hover:bg-riviere-ink hover:text-white"
+            >
+              Ofertas
+              <span className="text-[13px] leading-none">×</span>
+            </button>
+          </div>
+        )}
 
         <div className="mt-8 flex items-center justify-between gap-4 text-xs uppercase tracking-[0.18em] text-riviere-smoke">
           <p>{filteredProducts.length} productos</p>

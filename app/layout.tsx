@@ -3,6 +3,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { CartProvider } from "@/src/context/cart-context";
+import { FacebookPixel } from "@/components/analytics/facebook-pixel";
 
 export const metadata: Metadata = {
   title: "RIVIERE | Camisas masculinas premium",
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
+        <FacebookPixel />
         <CartProvider>
           <Navbar />
           {children}

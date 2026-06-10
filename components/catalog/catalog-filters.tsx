@@ -14,6 +14,7 @@ export type CatalogFilterState = {
   talla: string;
   mangaCorta: string;
   sort: SortValue;
+  oferta: boolean;
 };
 
 type CatalogFiltersProps = {

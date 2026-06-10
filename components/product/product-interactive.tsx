@@ -112,6 +112,8 @@ export function ProductInteractive({
         talla: tallaSeleccionada,
         color: colorSeleccionado || undefined,
         precio: precioFinal,
+        precioOriginal: precio,
+        dcto: dcto ?? null,
         imagen: imagenActual,
         stockMax: variantStock,
       },

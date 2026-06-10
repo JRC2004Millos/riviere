@@ -1,6 +1,6 @@
 export function AboutRiviere() {
   return (
-    <section className="bg-riviere-bone py-20 md:py-28">
+    <section id="about-riviere" className="bg-riviere-bone py-20 md:py-28">
       <div className="container grid gap-12 md:grid-cols-[0.8fr_1.2fr]">
         <div>
           <p className="text-xs uppercase tracking-[0.24em] text-riviere-smoke">
