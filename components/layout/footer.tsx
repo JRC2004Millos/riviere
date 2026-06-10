@@ -45,6 +45,7 @@ function GmailIcon() {
 
 const INFO_LINKS = [
   { label: "Envíos", href: "/envios" },
+  { label: "Política de Cambios", href: "/cambios" },
   { label: "Garantía", href: "/garantia" },
   { label: "Guía de Tallas", href: "/guia-de-tallas" },
   { label: "Política de privacidad", href: "/privacidad" },

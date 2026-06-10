@@ -7,14 +7,14 @@ import { useRef, useState, useEffect } from "react";
 const CARD_W = 288; // w-72 en px
 const GAP    = 24;  // gap-6 en px
 
-type Item = { name: string; slug: string; image: string | null };
+type Item = { name: string; slug: string; image: string | null; description?: string };
 
 const products: Item[] = [
-  { name: "Oxford",  slug: "Oxford",  image: "/images/OXFORD.png" },
-  { name: "Formal",  slug: "Traje",   image: "/images/formal.png" },
-  { name: "Cuadros", slug: "Cuadros", image: "/images/cuadros.png" },
-  { name: "Rayas",   slug: "Rayas",   image: "/images/rayas.png" },
-  { name: "Diseños", slug: "Diseños", image: "/images/disenos.png" },
+  { name: "Oxford",  slug: "Oxford",  image: "/images/OXFORD.png",  description: "Un esencial contemporáneo diseñado para acompañar el día a día con elegancia natural." },
+  { name: "Formal",  slug: "Traje",   image: "/images/formal.png",  description: "La expresión más depurada de la sastrería moderna." },
+  { name: "Cuadros", slug: "Cuadros", image: "/images/cuadros.png", description: "Un clásico masculino que combina tradición y carácter." },
+  { name: "Rayas",   slug: "Rayas",   image: "/images/rayas.png",   description: "Proporciones precisas que aportan profundidad visual y distinción." },
+  { name: "Diseños", slug: "Diseños", image: "/images/disenos.png", description: "Texturas y patrones sutiles que distinguen cada pieza con personalidad propia." },
 ];
 
 const items: Item[] = [
@@ -97,11 +97,12 @@ export function FeaturedCollection() {
               <Link
                 key={item.slug}
                 href={item.slug === "__all__" ? "/catalogo" : `/catalogo?estilo=${item.slug}`}
-                className="group w-72 flex-shrink-0"
+                className="group flex w-72 flex-shrink-0 flex-col"
               >
                 {item.image ? (
-                  <article className="border border-riviere-ink/10 bg-riviere-stone">
-                    <div className="relative aspect-square overflow-hidden">
+                  <article className="flex flex-1 flex-col border border-riviere-ink/10 bg-riviere-stone">
+                    {/* imagen cuadrada fija — flex-shrink-0 evita que se comprima */}
+                    <div className="relative aspect-square w-full flex-shrink-0 overflow-hidden">
                       <Image
                         src={item.image}
                         alt={item.name}
@@ -110,15 +111,21 @@ export function FeaturedCollection() {
                         className="object-cover transition duration-700 group-hover:scale-[1.04]"
                       />
                     </div>
-                    <div className="px-5 py-4">
+                    {/* texto ocupa el espacio restante → todas las tarjetas misma altura */}
+                    <div className="flex flex-1 flex-col px-5 py-4">
                       <h3 className="text-sm font-medium uppercase tracking-[0.14em]">
                         {item.name}
                       </h3>
+                      {item.description && (
+                        <p className="mt-2 text-xs leading-5 text-riviere-smoke">
+                          {item.description}
+                        </p>
+                      )}
                     </div>
                   </article>
                 ) : (
-                  <article className="flex flex-col bg-riviere-ink text-white">
-                    <div className="flex aspect-square flex-col items-center justify-center gap-4 px-8 text-center">
+                  <article className="flex flex-1 flex-col bg-riviere-ink text-white">
+                    <div className="flex aspect-square w-full flex-shrink-0 flex-col items-center justify-center gap-4 px-8 text-center">
                       <p className="text-[10px] uppercase tracking-[0.32em] text-white/40">
                         Catálogo completo
                       </p>
@@ -129,7 +136,7 @@ export function FeaturedCollection() {
                         →
                       </span>
                     </div>
-                    <div className="px-5 py-4">
+                    <div className="flex flex-1 flex-col px-5 py-4">
                       <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-white/70">
                         Ver todas
                       </h3>

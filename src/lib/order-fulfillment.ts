@@ -71,6 +71,7 @@ export async function fulfillOrder(
         total: order.total,
         envio: order.envio,
         items: order.items,
+        createdAt: order.createdAt,
       });
       console.log(`[fulfillOrder] confirmation email sent to ${order.customerEmail}`);
     } catch (err) {
