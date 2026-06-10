@@ -180,21 +180,6 @@ function legalSection(): string {
         <a href="${RETURNS_URL}" style="color:#888;text-decoration:underline">${RETURNS_URL}</a>
       </p>
 
-      <!-- Derecho de retracto -->
-      <div style="padding:14px 16px;background:#f9f9f9;border-left:2px solid #ddd">
-        <p style="margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:#bbb">Derecho de retracto — Ley 1480 de 2011</p>
-        <p style="margin:0;font-size:11px;color:#aaa;line-height:1.7">
-          De acuerdo con el Estatuto del Consumidor colombiano, tienes derecho a retractarte
-          de esta compra dentro de los <strong style="color:#888">5 días hábiles</strong> siguientes
-          a la recepción del producto, siempre que no haya sido usado ni alterado.
-          Para ejercer este derecho, escríbenos a
-          <a href="mailto:${STORE_EMAIL}" style="color:#888">${STORE_EMAIL}</a>
-          con el asunto <em>"Retracto – ${"{referencia}"}"</em> e indica el motivo.
-          Los gastos de envío de la devolución corren por cuenta del comprador,
-          salvo que el producto presente un defecto de fábrica.
-        </p>
-      </div>
-
     </div>`;
 }
 

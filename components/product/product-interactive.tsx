@@ -89,7 +89,8 @@ export function ProductInteractive({
     setAdded(false);
     setCantidad(1);
     setImagenCargando(true);
-    setImagenActual(`/images/${estilo}-${color}.png`);
+    const colorFile = color.trim().toUpperCase().replace(/\s+/g, "-");
+    setImagenActual(`/images/${estilo}-${colorFile}.png`);
   }
 
   function handleTallaChange(talla: string) {
