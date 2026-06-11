@@ -3,6 +3,7 @@ import Script from "next/script";
 const PIXEL_ID = "4650970578504342";
 
 export function FacebookPixel() {
+  if (process.env.NODE_ENV !== "production") return null;
   return (
     <>
       <Script id="fb-pixel" strategy="afterInteractive">{`

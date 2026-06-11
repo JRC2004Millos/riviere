@@ -5,16 +5,49 @@ import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 
 const CARD_W = 288; // w-72 en px
-const GAP    = 24;  // gap-6 en px
+const GAP = 24; // gap-6 en px
 
-type Item = { name: string; slug: string; image: string | null; description?: string };
+type Item = {
+  name: string;
+  slug: string;
+  image: string | null;
+  description?: string;
+};
 
 const products: Item[] = [
-  { name: "Oxford",  slug: "Oxford",  image: "/images/OXFORD.png",  description: "Un esencial contemporáneo diseñado para acompañar el día a día con elegancia natural." },
-  { name: "Formal",  slug: "Traje",   image: "/images/formal.png",  description: "La expresión más depurada de la sastrería moderna." },
-  { name: "Cuadros", slug: "Cuadros", image: "/images/cuadros.png", description: "Un clásico masculino que combina tradición y carácter." },
-  { name: "Rayas",   slug: "Rayas",   image: "/images/rayas.png",   description: "Proporciones precisas que aportan profundidad visual y distinción." },
-  { name: "Diseños", slug: "Diseños", image: "/images/disenos.png", description: "Texturas y patrones sutiles que distinguen cada pieza con personalidad propia." },
+  {
+    name: "Oxford",
+    slug: "Oxford",
+    image: "/images/OXFORD.png",
+    description:
+      "Un esencial contemporáneo diseñado para acompañar el día a día con elegancia natural.",
+  },
+  {
+    name: "Formal",
+    slug: "Traje",
+    image: "/images/formal.png",
+    description: "La expresión más depurada de la sastrería moderna.",
+  },
+  {
+    name: "Cuadros",
+    slug: "Cuadros",
+    image: "/images/cuadros.png",
+    description: "Un clásico masculino que combina tradición y carácter.",
+  },
+  {
+    name: "Rayas",
+    slug: "Rayas",
+    image: "/images/rayas.png",
+    description:
+      "Proporciones precisas que aportan profundidad visual y distinción.",
+  },
+  {
+    name: "Diseños",
+    slug: "Diseños",
+    image: "/images/disenos.png",
+    description:
+      "Texturas y patrones sutiles que distinguen cada pieza con personalidad propia.",
+  },
 ];
 
 const items: Item[] = [
@@ -25,7 +58,7 @@ const items: Item[] = [
 export function FeaturedCollection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
-  const [atEnd,   setAtEnd]   = useState(false);
+  const [atEnd, setAtEnd] = useState(false);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -44,7 +77,10 @@ export function FeaturedCollection() {
   }, []);
 
   const scroll = (dir: 1 | -1) =>
-    trackRef.current?.scrollBy({ left: dir * (CARD_W + GAP), behavior: "smooth" });
+    trackRef.current?.scrollBy({
+      left: dir * (CARD_W + GAP),
+      behavior: "smooth",
+    });
 
   return (
     <>
@@ -83,7 +119,16 @@ export function FeaturedCollection() {
               atStart ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
@@ -91,12 +136,16 @@ export function FeaturedCollection() {
           {/* Track deslizable — touch y scroll nativo */}
           <div
             ref={trackRef}
-            className="riv-track flex gap-6 overflow-x-auto scroll-pl-6 px-6"
+            className="riv-track flex gap-6 overflow-x-auto scroll-pl-6 px-6 md:justify-between"
           >
             {items.map((item) => (
               <Link
                 key={item.slug}
-                href={item.slug === "__all__" ? "/catalogo" : `/catalogo?estilo=${item.slug}`}
+                href={
+                  item.slug === "__all__"
+                    ? "/catalogo"
+                    : `/catalogo?estilo=${item.slug}`
+                }
                 className="group flex w-72 flex-shrink-0 flex-col"
               >
                 {item.image ? (
@@ -130,7 +179,9 @@ export function FeaturedCollection() {
                         Catálogo completo
                       </p>
                       <p className="text-4xl font-light uppercase leading-tight tracking-[0.2em]">
-                        Ver<br />todas
+                        Ver
+                        <br />
+                        todas
                       </p>
                       <span className="text-lg text-white/50 transition duration-300 group-hover:translate-x-1 group-hover:text-white">
                         →
@@ -156,7 +207,16 @@ export function FeaturedCollection() {
               atEnd ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
