@@ -158,6 +158,16 @@ function deliveryBlock(order: EmailOrder): string {
     </div>`;
 }
 
+function logoBlock(): string {
+  return `
+    <div style="margin:36px 0 0;text-align:center">
+      <img src="${APP_URL}/images/Riviere%20logo%20sin%20bordes.png"
+           alt="RIVIERE"
+           width="160"
+           style="display:inline-block;max-width:160px;height:auto" />
+    </div>`;
+}
+
 function legalSection(): string {
   return `
     <div style="margin-top:40px;padding-top:24px;border-top:1px solid #f0f0f0">
@@ -228,6 +238,7 @@ export async function sendOrderConfirmedEmail(
     ${addressBlock(order)}
     ${itemsTable(order)}
     ${deliveryBlock(order)}
+    ${logoBlock()}
     ${legalSection()}
   `);
 

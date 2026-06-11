@@ -1,15 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
+const SLIDES = [
+  { src: "/images/riviere1.jpeg", alt: "Camisas Givenchy curadas por RIVIERE" },
+  { src: "/images/diadelpadre.png", srcMobile: "/images/diadelpadre_vertical.png", alt: "Día del Padre — RIVIERE" },
+];
+
 const MotionLink = motion(Link);
 
 export function Hero() {
   const [isHovered, setIsHovered] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((i) => (i + 1) % SLIDES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative overflow-hidden bg-white pt-20 text-[#111] min-h-[80svh] md:min-h-svh">
@@ -33,14 +46,27 @@ export function Hero() {
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        <Image
-          src="/images/riviere1.jpeg"
-          alt="Camisas Givenchy curadas por RIVIERE"
-          fill
-          priority
-          sizes="(min-width: 768px) 70vw, 100vw"
-          className="object-cover object-center"
-        />
+        {SLIDES.map((slide, i) => (
+          <Fragment key={slide.src}>
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              priority={i === 0}
+              sizes="(min-width: 768px) 70vw, 100vw"
+              className={`object-cover object-center transition-opacity duration-1000 ${"srcMobile" in slide ? "hidden md:block" : ""} ${i === activeIndex ? "opacity-100" : "opacity-0"}`}
+            />
+            {"srcMobile" in slide && (
+              <Image
+                src={slide.srcMobile!}
+                alt={slide.alt}
+                fill
+                sizes="100vw"
+                className={`object-cover object-center transition-opacity duration-1000 md:hidden ${i === activeIndex ? "opacity-100" : "opacity-0"}`}
+              />
+            )}
+          </Fragment>
+        ))}
       </MotionLink>
 
       {/* Overlay mobile — degradado oscuro de abajo hacia arriba para legibilidad */}

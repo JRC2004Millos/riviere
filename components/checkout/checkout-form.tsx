@@ -45,7 +45,7 @@ const SELECT_CLS =
 const LABEL_CLS = "text-xs uppercase tracking-[0.18em] text-riviere-smoke";
 
 export function CheckoutForm() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal } = useCart();
 
   const [fields, setFields] = useState<Fields>({
     nombre: "",
@@ -156,7 +156,6 @@ export function CheckoutForm() {
         return;
       }
 
-      clearCart();
       window.location.href = data.wompiUrl;
     } catch {
       setError("Error de conexión. Intenta de nuevo.");
