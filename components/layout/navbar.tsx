@@ -12,7 +12,6 @@ const navLeft = [
   { label: "Inicio", href: "/" },
   { label: "Catálogo", href: "/catalogo" },
   { label: "Colección", href: "/#coleccion" },
-  { label: "Ofertas", href: "/catalogo?oferta=true", highlight: true },
 ];
 
 const navRight = [
@@ -20,9 +19,11 @@ const navRight = [
   { label: "Contacto", href: "/#contacto" },
 ];
 
-const allNavItems = [...navLeft, ...navRight];
+type NavbarProps = {
+  showOffersLink: boolean;
+};
 
-export function Navbar() {
+export function Navbar({ showOffersLink }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,17 +48,26 @@ export function Navbar() {
     setOpen(false);
   }
 
+  const leftNav = showOffersLink
+    ? [
+        ...navLeft,
+        { label: "Ofertas", href: "/catalogo?oferta=true", highlight: true },
+      ]
+    : navLeft;
+
+  const allNavItems = [...leftNav, ...navRight];
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-riviere-ink/10 bg-white/92 text-[#111] backdrop-blur-sm">
       <nav className="container grid h-20 grid-cols-[1fr_auto_1fr] items-center">
-        {/* Izquierda desktop: links de navegación */}
+        {/* Izquierda desktop: links de navegaciÃ³n */}
         <div className="hidden items-center gap-7 md:flex">
-          {navLeft.map((item) => (
+          {leftNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={
-                item.highlight
+                "highlight" in item && item.highlight
                   ? "text-xs uppercase tracking-[0.28em] text-red-600 transition hover:opacity-70"
                   : "text-xs uppercase tracking-[0.28em] text-[#111]/75 transition hover:text-[#111]"
               }
@@ -128,7 +138,7 @@ export function Navbar() {
                 onBlur={() => {
                   if (!searchQuery.trim()) closeSearch();
                 }}
-                placeholder="Nombre o código..."
+                placeholder="Nombre o cÃ³digo..."
                 style={{ width: "180px" }}
                 className="border-b border-riviere-ink/25 bg-transparent pb-1 text-xs outline-none tracking-[0.08em] placeholder:text-riviere-smoke/40"
                 aria-label="Buscar productos"
@@ -155,7 +165,7 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Derecha mobile: carrito como ícono */}
+        {/* Derecha mobile: carrito como Ã­cono */}
         <div className="flex items-center justify-end md:hidden">
           <Link
             href="/carrito"
@@ -172,7 +182,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Menú mobile desplegable */}
+      {/* MenÃº mobile desplegable */}
       <div
         className={cn(
           "grid overflow-hidden border-t border-riviere-ink/10 bg-white transition-all duration-300 md:hidden",
@@ -181,7 +191,7 @@ export function Navbar() {
       >
         <div className="min-h-0">
           <div className="container flex flex-col gap-5 py-6">
-            {/* Búsqueda mobile */}
+            {/* BÃºsqueda mobile */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -193,7 +203,7 @@ export function Navbar() {
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Busca por nombre o código..."
+                placeholder="Busca por nombre o cÃ³digo..."
                 className="w-full bg-transparent text-sm outline-none tracking-[0.1em] placeholder:text-riviere-smoke/40"
                 aria-label="Buscar productos"
               />

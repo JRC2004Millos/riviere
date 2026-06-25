@@ -6,9 +6,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-const SLIDES = [
+type HeroSlide = {
+  src: string;
+  alt: string;
+  srcMobile?: string;
+};
+
+const SLIDES: HeroSlide[] = [
   { src: "/images/riviere1.jpeg", alt: "Camisas Givenchy curadas por RIVIERE" },
-  { src: "/images/diadelpadre.png", srcMobile: "/images/diadelpadre_vertical.png", alt: "Día del Padre — RIVIERE" },
+  //{ src: "/images/diadelpadre.png", srcMobile: "/images/diadelpadre_vertical.png", alt: "Día del Padre — RIVIERE" },
 ];
 
 const MotionLink = motion(Link);
