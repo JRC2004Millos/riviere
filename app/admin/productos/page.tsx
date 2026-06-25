@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getAllProducts } from "@/src/lib/products-store";
 import { getProductImage } from "@/src/lib/product-images";
 import { Button } from "@/components/ui/button";
+import { BulkDiscountControls } from "@/components/admin/bulk-discount-controls";
 
 export const dynamic = "force-dynamic";
 
@@ -24,13 +25,13 @@ export default async function AdminProductosPage() {
   return (
     <main className="min-h-screen bg-riviere-bone pt-20 text-[#111]">
       <div className="container py-10">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <p className="mb-1 text-xs uppercase tracking-[0.28em] text-riviere-smoke">
               Admin
             </p>
             <h1 className="text-2xl font-light uppercase tracking-[0.15em]">
-              Productos — {disponibles}/{products.length} disponibles
+              Productos - {disponibles}/{products.length} disponibles
             </h1>
           </div>
           <Button
@@ -40,6 +41,10 @@ export default async function AdminProductosPage() {
           >
             <Link href="/admin">← Dashboard</Link>
           </Button>
+        </div>
+
+        <div className="mb-6">
+          <BulkDiscountControls productCount={products.length} />
         </div>
 
         <div className="overflow-x-auto border border-riviere-ink/10 bg-white">

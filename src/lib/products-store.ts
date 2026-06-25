@@ -103,6 +103,61 @@ export async function getAllProducts(): Promise<MergedProduct[]> {
   return rows.map(toMerged);
 }
 
+export async function hasActiveOffers(): Promise<boolean> {
+  const count = await prisma.product.count({
+    where: {
+      dcto: {
+        not: null,
+        gt: 0,
+      },
+    },
+  });
+
+  return count > 0;
+}
+
+export async function resetAllDiscounts(): Promise<number> {
+  const result = await prisma.product.updateMany({
+    data: { dcto: 0 },
+  });
+
+  return result.count;
+}
+
+export async function applyRandomDiscounts(
+  discount: number,
+  quantity: number,
+): Promise<{
+  updated: number;
+  eligible: number;
+}> {
+  const eligibleProducts = await prisma.product.findMany({
+    where: {
+      OR: [{ dcto: null }, { dcto: 0 }],
+    },
+    select: { id: true },
+  });
+
+  const eligible = eligibleProducts.length;
+  if (eligible === 0 || quantity <= 0) {
+    return { updated: 0, eligible };
+  }
+
+  const shuffled = [...eligibleProducts].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, Math.min(quantity, eligible));
+
+  const result = await prisma.$transaction(
+    selected.map((product) =>
+      prisma.product.update({
+        where: { id: product.id },
+        data: { dcto: discount },
+      }),
+    ),
+  );
+
+  return { updated: result.length, eligible };
+}
+
 export async function saveSortOrder(ids: string[]): Promise<void> {
   await prisma.$transaction(
     ids.map((id, index) =>
