@@ -4,7 +4,7 @@ import { prisma } from "@/src/lib/prisma";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth();
   if (!session) {
@@ -12,7 +12,7 @@ export async function PATCH(
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = (await req.json()) as { action?: "deliver" | "cancel" };
 
     if (!body.action || !["deliver", "cancel"].includes(body.action)) {
