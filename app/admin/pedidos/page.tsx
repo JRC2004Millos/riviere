@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/src/lib/prisma";
+import { PedidoActions } from "@/components/admin/pedido-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ const DATE_FMT = new Intl.DateTimeFormat("es-CO", {
 
 const STATUS_LABEL: Record<string, string> = {
   PENDING_PAYMENT: "Pendiente",
-  PAID: "Pagado",
+  PAID: "Entregado",
   FAILED: "Fallido",
   CANCELLED: "Cancelado",
 };
@@ -31,7 +32,7 @@ const STATUS_STYLE: Record<string, string> = {
   PENDING_PAYMENT: "bg-amber-50 text-amber-700 border-amber-200",
   PAID: "bg-emerald-50 text-emerald-700 border-emerald-200",
   FAILED: "bg-red-50 text-red-600 border-red-200",
-  CANCELLED: "bg-riviere-stone text-riviere-smoke border-riviere-ink/10",
+  CANCELLED: "bg-red-50 text-red-600 border-red-200",
 };
 
 export default async function AdminPedidosPage() {
@@ -226,6 +227,12 @@ export default async function AdminPedidosPage() {
                     </tfoot>
                   </table>
                 </div>
+
+                {order.status === "PENDING_PAYMENT" && (
+                  <div className="px-6 pb-5">
+                    <PedidoActions orderId={order.id} />
+                  </div>
+                )}
               </div>
             ))}
           </div>
