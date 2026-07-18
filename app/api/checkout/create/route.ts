@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/src/lib/prisma";
 import { generateIntegrityHash } from "@/src/lib/wompi";
+import { saveCheckoutIntent } from "@/src/lib/checkout-intents";
 import path from "path";
 import fs from "fs";
 
@@ -153,23 +153,22 @@ export async function POST(req: NextRequest) {
 
     const reference = `RIVIERE-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
-    await prisma.order.create({
-      data: {
-        reference,
-        total,
-        envio,
-        customerName: customer.nombre.trim(),
-        customerEmail: customer.email.trim().toLowerCase(),
-        customerPhone: customer.telefono?.trim() ?? "",
-        customerCity: ciudad,
-        customerDepartment: customer.departamentoId
+    await saveCheckoutIntent(reference, {
+      items: orderItems,
+      customer: {
+        nombre: customer.nombre.trim(),
+        email: customer.email.trim().toLowerCase(),
+        telefono: customer.telefono?.trim() ?? "",
+        ciudad,
+        departamento: customer.departamentoId
           ? getDepartamentoNombre(customer.departamentoId)
           : "",
-        customerAddress: customer.detallesDir?.trim()
-            ? `${customer.direccion.trim()}, ${customer.detallesDir.trim()}`
-            : customer.direccion.trim(),
-        items: { create: orderItems },
+        direccion: customer.detallesDir?.trim()
+          ? `${customer.direccion.trim()}, ${customer.detallesDir.trim()}`
+          : customer.direccion.trim(),
       },
+      total,
+      envio,
     });
 
     const amountInCents = total * 100;

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
+import { getCheckoutIntent } from "@/src/lib/checkout-intents";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,16 @@ export async function GET(
   });
 
   if (!order) {
-    return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
+    const intent = await getCheckoutIntent(reference);
+    if (!intent) {
+      return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      reference,
+      status: intent.status === "FAILED" ? "FAILED" : "PENDING_PAYMENT",
+      total: intent.payload.total as number,
+    });
   }
 
   return NextResponse.json(order);

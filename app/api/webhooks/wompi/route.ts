@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateWebhookSignature } from "@/src/lib/wompi";
-import { fulfillOrder } from "@/src/lib/order-fulfillment";
+import { finalizeCheckout } from "@/src/lib/order-fulfillment";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       };
 
       if (status === "APPROVED") {
-        await fulfillOrder(reference, "PAID", wompiTransactionId).catch(
+        await finalizeCheckout(reference, "PAID", wompiTransactionId).catch(
           console.error,
         );
       } else if (
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         status === "ERROR" ||
         status === "VOIDED"
       ) {
-        await fulfillOrder(reference, "FAILED", wompiTransactionId).catch(
+        await finalizeCheckout(reference, "FAILED", wompiTransactionId).catch(
           console.error,
         );
       }

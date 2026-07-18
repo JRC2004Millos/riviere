@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { getWompiTransaction } from "@/src/lib/wompi";
-import { fulfillOrder } from "@/src/lib/order-fulfillment";
+import { finalizeCheckout } from "@/src/lib/order-fulfillment";
+import { getCheckoutIntent } from "@/src/lib/checkout-intents";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,38 @@ export async function GET(req: NextRequest) {
     select: { reference: true, status: true, total: true },
   });
   if (!order) {
-    return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
+    const intent = await getCheckoutIntent(txn.reference);
+    if (!intent) {
+      return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
+    }
+
+    if (txn.status === "APPROVED") {
+      await finalizeCheckout(txn.reference, "PAID", wompiId);
+      return NextResponse.json({
+        reference: txn.reference,
+        status: "PAID",
+        total: intent.payload.total as number,
+      });
+    }
+
+    if (
+      txn.status === "DECLINED" ||
+      txn.status === "ERROR" ||
+      txn.status === "VOIDED"
+    ) {
+      await finalizeCheckout(txn.reference, "FAILED", wompiId);
+      return NextResponse.json({
+        reference: txn.reference,
+        status: "FAILED",
+        total: intent.payload.total as number,
+      });
+    }
+
+    return NextResponse.json({
+      reference: txn.reference,
+      status: "PENDING_PAYMENT",
+      total: intent.payload.total as number,
+    });
   }
 
   // 4. Procesar si aún está pendiente (actualiza estado + stock + envía correo)
@@ -48,7 +80,7 @@ export async function GET(req: NextRequest) {
           : null;
 
     if (newStatus) {
-      await fulfillOrder(txn.reference, newStatus, wompiId);
+      await finalizeCheckout(txn.reference, newStatus, wompiId);
       return NextResponse.json({
         reference: order.reference,
         status: newStatus,
