@@ -35,16 +35,20 @@ export async function GET(req: NextRequest) {
   });
   if (!order) {
     const intent = await getCheckoutIntent(txn.reference);
-    if (!intent) {
+    if (!intent || !intent.payload || typeof intent.payload !== "object") {
       return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
     }
+
+    const payload = intent.payload as {
+      total?: number;
+    };
 
     if (txn.status === "APPROVED") {
       await finalizeCheckout(txn.reference, "PAID", wompiId);
       return NextResponse.json({
         reference: txn.reference,
         status: "PAID",
-        total: intent.payload.total as number,
+        total: payload.total ?? 0,
       });
     }
 
@@ -57,14 +61,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({
         reference: txn.reference,
         status: "FAILED",
-        total: intent.payload.total as number,
+        total: payload.total ?? 0,
       });
     }
 
     return NextResponse.json({
       reference: txn.reference,
       status: "PENDING_PAYMENT",
-      total: intent.payload.total as number,
+      total: payload.total ?? 0,
     });
   }
 

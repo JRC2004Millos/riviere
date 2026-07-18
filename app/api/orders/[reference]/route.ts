@@ -17,14 +17,18 @@ export async function GET(
 
   if (!order) {
     const intent = await getCheckoutIntent(reference);
-    if (!intent) {
+    if (!intent || !intent.payload || typeof intent.payload !== "object") {
       return NextResponse.json({ error: "Orden no encontrada" }, { status: 404 });
     }
+
+    const payload = intent.payload as {
+      total?: number;
+    };
 
     return NextResponse.json({
       reference,
       status: intent.status === "FAILED" ? "FAILED" : "PENDING_PAYMENT",
-      total: intent.payload.total as number,
+      total: payload.total ?? 0,
     });
   }
 
