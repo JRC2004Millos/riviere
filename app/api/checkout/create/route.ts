@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/src/lib/prisma";
 import { generateIntegrityHash } from "@/src/lib/wompi";
 import { saveCheckoutIntent } from "@/src/lib/checkout-intents";
 import path from "path";
