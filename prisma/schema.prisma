@@ -82,3 +82,16 @@ model OrderItem {
 
   @@map("order_items")
 }
+
+model CheckoutIntent {
+  id                 String   @id @default(uuid())
+  reference          String   @unique
+  payload            Json
+  status             String   @default("PENDING")
+  wompiTransactionId String?
+  consumedAt         DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("checkout_intents")
+}
